@@ -14,6 +14,7 @@ RNN的output和reference vector的cross entropy之和就是损失函数，也是
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-learn.png" width="60%"/></center>
 
+
 ##### Training
 
 有了损失函数后，训练其实也是用梯度下降法，为了计算方便，这里采取了反向传播(Backpropagation)的进阶版，Backpropagation through time，简称BPTT算法
@@ -22,11 +23,13 @@ BPTT算法与BP算法非常类似，只是多了一些时间维度上的信息�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-learn2.png" width="60%"/></center>
 
+
 不幸的是，RNN的训练并没有那么容易
 
 我们希望随着epoch的增加，参数的更新，loss应该要像下图的蓝色曲线一样慢慢下降，但在训练RNN的时候，你可能会遇到类似绿色曲线一样的学习曲线，loss剧烈抖动，并且会在某个时刻跳到无穷大，导致程序运行失败
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-learn3.png" width="60%"/></center>
+
 
 ##### Error Surface
 
@@ -39,6 +42,7 @@ BPTT算法与BP算法非常类似，只是多了一些时间维度上的信息�
 如果你的运气特别不好，一脚踩在悬崖上，由于之前一直处于平坦区域，gradient很小，你会把参数更新的步长(learning rate)调的比较大，而踩到悬崖上导致gradient突然变得很大，这会导致参数一下子被更新了一个大步伐，导致整个就飞出去了，这就是学习曲线突然跳到无穷大的原因
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-learn4.png" width="60%"/></center>
+
 
 想要解决这个问题，就要采用Clipping方法，当gradient即将大于某个threshold的时候，就让它停止增长，比如当gradient大于15的时候就直接让它等于15
 
@@ -53,6 +57,7 @@ BPTT算法与BP算法非常类似，只是多了一些时间维度上的信息�
 - 从中可以看出gradient时大时小，error surface很崎岖，尤其是在$w=1$的周围，gradient几乎是突变的，这让我们很难去调整learning rate
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-why.png" width="60%"/></center>
+
 
 因此我们可以解释，RNN训练困难，是由于它把同样的操作在不断的时间转换中重复使用
 
@@ -80,11 +85,13 @@ A：RNN和LSTM对memory的处理其实是不一样的：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-tech.png" width="60%"/></center>
 
+
 另一个版本GRU (Gated Recurrent Unit)，只有两个gate，需要的参数量比LSTM少，鲁棒性比LSTM好，不容易过拟合，它的基本精神是旧的不去，新的不来，GRU会把input gate和forget gate连起来，当forget gate把memory里的值清空时，input gate才会打开，再放入新的值
 
 此外，还有很多技术可以用来处理梯度消失的问题，比如Clockwise RNN、SCRN等
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-tech2.png" width="60%"/></center>
+
 
 #### More Applications
 
@@ -101,11 +108,13 @@ RNN的输入是字符序列，在不同时间点输入不同的字符，并在�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app.png" width="60%"/></center>
 
+
 ##### Key term Extraction
 
 关键词分析，RNN可以分析一篇文章并提取出其中的关键词，这里需要把含有关键词标签的文章作为RNN的训练数据
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app2.png" width="60%"/></center>
+
 
 ##### Output is shorter
 
@@ -117,15 +126,18 @@ RNN的输入是字符序列，在不同时间点输入不同的字符，并在�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app3.png" width="60%"/></center>
 
+
 但“好棒”和“好棒棒”实际上是不一样的，如何区分呢？
 
 需要用到CTC算法，它的基本思想是，输出不只是字符，还要填充NULL，输出的时候去掉NULL就可以得到连词的效果
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app4.png" width="60%"/></center>
 
+
 下图是CTC的示例，RNN的输出就是英文字母+NULL，google的语音识别系统就是用CTC实现的
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app5.png" width="60%"/></center>
+
 
 ##### Sequence to Sequence Learning
 
@@ -139,11 +151,13 @@ RNN的输入是字符序列，在不同时间点输入不同的字符，并在�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app6.png" width="60%"/></center>
 
+
 怎样才能让机器停止输出呢？
 
 可以多加一个叫做“断”的symbol “===”，当输出到这个symbol时，机器就停止输出
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app7.png" width="60%"/></center>
+
 
 具体的处理技巧这里不再详述
 
@@ -153,6 +167,7 @@ Seq2Seq还可以用在句法解析上，让机器看一个句子，它可以自�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app8.png" width="60%"/></center>
 
+
 ##### Seq2Seq for Auto-encoder Text
 
 如果用bag-of-word来表示一篇文章，就很容易丢失词语之间的联系，丢失语序上的信息
@@ -161,15 +176,18 @@ Seq2Seq还可以用在句法解析上，让机器看一个句子，它可以自�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app9.png" width="60%"/></center>
 
+
 这里就可以使用Seq2Seq Autoencoder，在考虑了语序的情况下，把文章编码成vector，只需要把RNN当做编码器和解码器即可
 
 我们输入word sequence，通过RNN变成embedded vector，再通过另一个RNN解压回去，如果能够得到一模一样的句子，则压缩后的vector就代表了这篇文章中最重要的信息
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app10.png" width="60%"/></center>
 
+
 这个结构甚至可以被层次化，我们可以对句子的几个部分分别做vector的转换，最后合并起来得到整个句子的vector
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app11.png" width="60%"/></center>
+
 
 ##### Seq2Seq for Auto-encoder Speech
 
@@ -179,11 +197,13 @@ Seq2Seq autoencoder还可以用在语音处理上，它可以把一段语音信�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app12.png" width="60%"/></center>
 
+
 先把声音信号转化成声学特征向量(acoustic features)，再通过RNN编码，最后一个时间点存在memory里的值就代表了整个声音信号的信息
 
 为了能够对该神经网络训练，还需要一个RNN作为解码器，得到还原后的$y_i$，使之与$x_i$的差距最小
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app13.png" width="60%"/></center>
+
 
 ##### Attention-based Model
 
@@ -192,5 +212,6 @@ Seq2Seq autoencoder还可以用在语音处理上，它可以把一段语音信�
 机器会有自己的记忆池，神经网络通过操控读写头去读或者写指定位置的信息，这个过程跟图灵机很像，因此也被称为neural turing machine
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/rnn-app14.png" width="60%"/></center>
+
 
 这种方法通常用在阅读理解上，让机器读一篇文章，再把每句话的语义都存到不同的vector中，接下来让用户向机器提问，神经网络就会去调用读写头的中央处理器，取出memory中与查询语句相关的信息，综合处理之后，可以给出正确的回答

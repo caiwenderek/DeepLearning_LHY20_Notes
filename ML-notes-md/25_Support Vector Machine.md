@@ -18,6 +18,7 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-bc.png" width="60%"/></center>
 
+
 下图中，横坐标为$\hat y^n f(x)$，我们希望横坐标越大越好：
 
 - 当$\hat y^n>0$时，希望$f(x)$越正越好
@@ -31,6 +32,7 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-bc2.png" width="60%"/></center>
 
+
 ##### square loss
 
 下图中的红色曲线代表了square loss的损失函数：$l(f(x^n),\hat y^n)=(\hat y^n f(x^n)-1)^2$
@@ -40,6 +42,7 @@
 - 但实际上整条曲线是不合理的，它会使得$\hat y^n f(x)$很大的时候有一个更大的loss
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-bc3.png" width="60%"/></center>
+
 
 ##### sigmoid+square loss
 
@@ -60,6 +63,7 @@
 - 我们虽然不能minimize理想的loss曲线，但我们可以minimize它的upper bound，从而起到最小化loss的效果
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-bc4.png" width="60%"/></center>
+
 
 ##### cross entropy VS square error
 
@@ -87,6 +91,7 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-bc5.png" width="60%"/></center>
 
+
 在紫线中，当$\hat y^n f(x)>1$，则已经实现目标，loss=0；当$\hat y^n f(x)>0$，表示已经得到了正确答案，但Hinge Loss认为这还不够，它需要你继续往1的地方前进
 
 事实上，Hinge Loss也是Ideal loss的upper bound，但是当横坐标$\hat y^n f(x)>1$时，它与Ideal loss近乎是完全贴近的
@@ -107,6 +112,7 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-linear.png" width="60%"/></center>
 
+
 对比Logistic Regression和Linear SVM，两者唯一的区别就是损失函数不同，前者用的是cross entropy，后者用的是Hinge loss
 
 事实上，SVM并不局限于Linear，尽管Linear可以带来很多好的特质，但我们完全可以在一个Deep的神经网络中使用Hinge loss的损失函数，就成为了Deep SVM，其实Deep Learning、SVM这些方法背后的精神都是相通的，并没有那么大的界限
@@ -116,6 +122,7 @@
 尽管SVM大多不是用梯度下降训练的，但使用该方法训练确实是可行的，推导过程如下：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-gd.png" width="60%"/></center>
+
 
 ##### another formulation
 
@@ -131,6 +138,7 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-formulation.png" width="60%"/></center>
 
+
 此时该表达式就和你熟知的SVM一样了：
 
 $L(f)=\sum\limits_n \epsilon^n+\lambda ||w||_2$，且$\hat y^n f(x)\geq 1-\epsilon^n$，其中$\hat y^n$和$f(x)$要同号，$\epsilon^n$要大于等于0，这里$\epsilon^n$的作用就是放宽1的margin，也叫作松弛变量(slack variable)
@@ -142,8 +150,10 @@ $L(f)=\sum\limits_n \epsilon^n+\lambda ||w||_2$，且$\hat y^n f(x)\geq 1-\epsil
 ##### explain linear combination
 
 你要先说服你自己一件事：实际上我们找出来的可以minimize损失函数的参数，其实就是data的线性组合
+
 $$
 w^*=\sum\limits_n \alpha^*_n x^n
+
 $$
 你可以通过拉格朗日乘数法去求解前面的式子来验证，这里试图从梯度下降的角度来解释：
 
@@ -153,45 +163,56 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-dual.png" width="60%"/></center>
 
+
 SVM解出来的$\alpha_n$是sparse的，因为有很多$x^n$的系数微分为0，这意味着即使从数据集中把这些$x^n$的样本点移除掉，对结果也是没有影响的，这可以增强系统的鲁棒性；而在传统的cross entropy的做法里，每一笔data对结果都会有影响，因此鲁棒性就没有那么好
 
 ##### redefine model and loss function
 
 知道$w$是$x^n$的线性组合之后，我们就可以对原先的SVM函数进行改写：
+
 $$
 w=\sum_n\alpha_nx^n=X\alpha \\
 f(x)=w^Tx=\alpha^TX^Tx=\sum_n\alpha_n(x^n\cdot x)
+
 $$
 这里的$x$表示新的data，$x^n$表示数据集中已存在的所有data，由于很多$\alpha_n$为0，因此计算量并不是很大
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-dual2.png" width="60%"/></center>
+
 
 接下来把$x^n$与$x$的内积改写成Kernel function的形式：$x^n\cdot x=K(x^n,x)$
 
 此时model就变成了$f(x)= \sum\limits_n\alpha_n K(x^n,x)$，未知的参数变成了$\alpha_n$
 
 现在我们的目标是，找一组最好的$\alpha_n$，让loss最小，此时损失函数改写为：
+
 $$
 L(f)=\sum\limits_n l(\sum\limits_{n'} \alpha_{n'}K(x^{n'},x^n),\hat y^n)
+
 $$
 从中可以看出，我们并不需要真的知道$x$的vector是多少，需要知道的只是$x$跟$z$之间的内积值$K(x,z)$，也就是说，只要知道Kernel function $K(x,z)$，就可以去对参数做优化了，这招就叫做**Kernel Trick**
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-dual3.png" width="60%"/></center>
+
 
 ##### Kernel Trick
 
 linear model会有很多的限制，有时候需要对输入的feature做一些转换之后，才能用linear model来处理，假设现在我们的data是二维的，$x=\left[ \begin{matrix}x_1\\x_2 \end{matrix} \right]$，先要对它做feature transform，然后再去应用Linear SVM
 
 如果要考虑特征之间的关系，则把特征转换为$\phi(x)=\left[ \begin{matrix}x_1^2\\\sqrt{2}x_1x_2\\ x_2^2 \end{matrix} \right]$，此时Kernel function就变为：
+
 $$
 K(x,z)=\phi(x)\cdot \phi(z)=\left[ \begin{matrix}x_1^2\\\sqrt{2}x_1x_2\\ x_2^2 \end{matrix} \right] \cdot \left[ \begin{matrix}z_1^2\\\sqrt{2}z_1z_2\\ z_2^2 \end{matrix} \right]=(x_1z_1+x_2z_2)^2=(\left[ \begin{matrix}x_1\\x_2 \end{matrix} \right]\cdot \left[ \begin{matrix}z_1\\z_2 \end{matrix} \right])^2=(x\cdot z)^2
+
 $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-kernel.png" width="60%"/></center>
 
+
 可见，我们对$x$和$z$做特征转换+内积，就等同于**在原先的空间上先做内积再平方**，在高维空间里，这种方式可以有更快的速度和更小的运算量
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-kernel2.png" width="60%"/></center>
+
 
 ##### RBF Kernel
 
@@ -200,6 +221,7 @@ $$
 将Kernel展开成无穷维如下：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-kernel3.png" width="60%"/></center>
+
 
 把与$x$相关的无穷多项串起来就是$\phi(x)$，把与$z$相关的无穷多项串起来就是$\phi(z)$，也就是说，当你使用RBF Kernel的时候，实际上就是在无穷多维的平面上做事情，当然这也意味着很容易过拟合
 
@@ -210,6 +232,7 @@ Sigmoid Kernel：$K(x,z)=\tanh(x,z)$
 如果使用的是Sigmoid Kernel，那model $f(x)$就可以被看作是只有一层hidden layer的神经网络，其中$x^1$\~$x^n$可以被看作是neuron的weight，变量$x$乘上这些weight，再通过tanh激活函数，最后全部乘上$\alpha^1$\~$\alpha^n$做加权和，得到最后的$f(x)$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-kernel4.png" width="60%"/></center>
+
 
 其中neuron的数目，由support vector的数量决定
 
@@ -226,6 +249,7 @@ Sigmoid Kernel：$K(x,z)=\tanh(x,z)$
 下图是直接定义语音vector之间的相似度$K(x,z)$来做Kernel Trick的示例：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svm-kernel5.png" width="60%"/></center>
+
 
 #### SVM vs Deep Learning
 

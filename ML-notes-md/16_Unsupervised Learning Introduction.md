@@ -16,6 +16,7 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/unsupervised.png" width="60%"/></center>
 
+
 #### Clustering
 
 ##### Introduction
@@ -25,6 +26,7 @@
 一个很critical的问题：我们到底要分几个cluster？
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/clustering.png" width="60%"/></center>
+
 
 ##### K-means
 
@@ -60,6 +62,7 @@ HAC，全称Hierarchical Agglomerative Clustering，层次聚类
 
     <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/HAC.png" width="60%"/></center>
 
+
 HAC和K-means最大的区别在于如何决定cluster的数量，在K-means里，K的值是要你直接决定的；而在HAC里，你并不需要直接决定分多少cluster，而是去决定这一刀切在树的哪里
 
 #### Dimension Reduction
@@ -76,6 +79,7 @@ clustering的缺点是**以偏概全**，它强迫每个object都要属于某个
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/DR.png" width="60%"/></center>
 
+
 ##### Why Dimension Reduction Help?
 
 接下来我们从另一个角度来看为什么Dimension Reduction可能是有用的
@@ -83,6 +87,7 @@ clustering的缺点是**以偏概全**，它强迫每个object都要属于某个
 假设data为下图左侧中的3D螺旋式分布，你会发现用3D的空间来描述这些data其实是很浪费的，因为我们完全可以把这个卷摊平，此时只需要用2D的空间就可以描述这个3D的信息
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/DR2.png" width="60%"/></center>
+
 
 如果以MNIST(手写数字集)为例，每一张image都是28\*28的dimension，但我们反过来想，大多数28\*28 dimension的vector转成image，看起来都不会像是一个数字，所以描述数字所需要的dimension可能远比28\*28要来得少
 
@@ -92,6 +97,7 @@ clustering的缺点是**以偏概全**，它强迫每个object都要属于某个
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/DR3.png" width="60%"/></center>
 
+
 ##### How to do Dimension Reduction？
 
 在Dimension Reduction里，我们要找一个function，这个function的input是原始的x，output是经过降维之后的z
@@ -99,6 +105,7 @@ clustering的缺点是**以偏概全**，它强迫每个object都要属于某个
 最简单的方法是**Feature Selection**，即直接从原有的dimension里拿掉一些直观上就对结果没有影响的dimension，就做到了降维，比如下图中从$x_1,x_2$两个维度中直接拿掉$x_1$；但这个方法不总是有用，因为很多情况下任何一个dimension其实都不能被拿掉，就像下图中的螺旋卷
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/DR4.png" width="60%"/></center>
+
 
 另一个常见的方法叫做**PCA**(Principe Component Analysis)
 

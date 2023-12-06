@@ -11,6 +11,7 @@
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pokemon-types.png" width="60%;" /></center>
 
 
+
 ##### 输入数值化
 
 对于宝可梦的分类问题来说，我们需要解决的第一个问题就是，怎么把某一只宝可梦当做function的input？
@@ -24,6 +25,7 @@
 以皮卡丘为例，我们可以用以上七种特性的数值所组成的vector来描述它
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pokemon-features.png" width="60%;"></center>
+
 
 
 #### How to classification
@@ -57,6 +59,7 @@ Regression的output是连续性质的数值，而classification要求的output�
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/classification-regression.png" width="60%;" /></center>
 
 
+
 而且值得注意的是，如果是多元分类问题，把class 1的target当做是1，class 2的target当做是2，class 3的target当做是3的做法是错误的，因为当你这样做的时候，就会被Regression认为class 1和class 2的关系是比较接近的，class 2和class 3的关系是比较接近的，而class 1和class 3的关系是比较疏远的；但是当这些class之间并没有什么特殊的关系的时候，这样的标签用Regression是没有办法得到好的结果的(one-hot编码也许是一种解决方案？)
 
 ##### Ideal Alternatives
@@ -70,6 +73,7 @@ Regression的output是连续性质的数值，而classification要求的output�
 我们要找的function f(x)里面会有另外一个function g(x)，当我们的input x输入后，如果g(x)>0，那f(x)的输出就是class 1，如果g(x)<0，那f(x)的输出就是class 2，这个方法保证了function的output都是离散的表示class的数值
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/ideal-alternatives.png" width="60%;" /></center>
+
 
 
 那之前不是说输出是1,2,3...是不行的吗，注意，那是针对Regression的loss function而言的，因为Regression的loss function是用output与“真值”的平方和作为评判标准的，这样输出值(3,2)与(3,1)之间显然是(3,2)关系更密切一些，为了解决这个问题，我们只需要重新定义一个loss function即可
@@ -119,6 +123,7 @@ C--> |"P(x|C2)"| D(x)
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/two-class.png" width="60%;" /></center>
 
 
+
 这一整套想法叫做**Generative model**(生成模型)，为什么叫它Generative model呢？因为有这个model的话，就可以拿它来generate生成x(如果你可以计算出每一个x出现的概率，就可以用这个distribution分布来生成x、sample x出来)
 
 ##### Prior
@@ -138,6 +143,7 @@ $P(C_1)$和$P(C_2)$这两个概率，被称为Prior，计算这两个值还是�
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/turtle.png" width="60%;" /></center>
 
 
+
 其实每一只宝可梦都是用一组特征值组成的向量来表示的，在这个vector里一共有七种不同的feature，为了方便可视化，这里先只考虑Defense和SP Defence这两种feature
 
 假设海龟的vector是[103 45]，虽然这个点在已有的数据里并没有出现过，但是不可以认为它出现的概率为0，我们需要用已有的数据去估测海龟出现的可能性
@@ -147,20 +153,25 @@ $P(C_1)$和$P(C_2)$这两个概率，被称为Prior，计算这两个值还是�
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/feature.png" width="60%;" /></center>
 
 
+
 ##### Gaussian Distribution
 
 先介绍一下高斯函数，这里$u$表示均值，$\Sigma$表示方差，两者都是矩阵matrix，那高斯函数的概率密度函数则是：
+
 $$
 f_{u,\Sigma}(x)=\frac{1}{(2\pi)^{\frac{D}{2}}}\frac{1}{|\Sigma|^{\frac{1}{2}}}e^{-\frac{1}{2}(x-u)^T\Sigma^{-1}(x-u)}
+
 $$
 从下图中可以看出，同样的$\Sigma$，不同的$u$，概率分布最高点的地方是不一样的
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/gaussian-distribution.png" width="60%;" /></center>
 
 
+
 同理，如果是同样的$u$，不同的$\Sigma$，概率分布最高点的地方是一样的，但是分布的密集程度是不一样的
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/gaussian-same-u.png" width="60%;" /></center>
+
 
 
 那接下来的问题就是怎么去找出这个Gaussian，**只需要去估测出这个Gaussian的均值$u$和协方差$\Sigma$即可**
@@ -170,18 +181,22 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/maximum-likelihood.png" width="60%;"/></center>
 
 
+
 实际上任意一组$u$和$\Sigma$对应的高斯函数($u$表示该Gaussian的中心点，$\Sigma$表示该Gaussian的分散程度)都有可能sample出跟当前分布一致的样本点，就像上图中的两个红色圆圈所代表的高斯函数，但肯定存在着发生概率最大的哪一个Gaussian，而这个函数就是我们要找的
 
 而极大似然函数$L(u,\Sigma)=f_{u,\Sigma}(x^1)\cdot f_{u,\Sigma}(x^2)...f_{u,\Sigma}(x^{79})$，实际上就是该事件发生的概率就等于每个点都发生的概率之积，我们只需要把每一个点的data代进去，就可以得到一个关于$u$和$\Sigma$的函数，分别求偏导，解出微分是0的点，即使L最大的那组参数，便是最终的估测值，通过微分得到的高斯函数的$u$和$\Sigma$的最优解如下：
+
 $$
 u^*,\Sigma^*=\arg \max\limits_{u,\Sigma} L(u,\Sigma) \\
 u^*=\frac{1}{79}\sum\limits_{n=1}^{79}x^n \ \ \ \ \Sigma^*=\frac{1}{79}\sum\limits_{n=1}^{79}(x^n-u^*)(x^n-u^*)^T
+
 $$
 当然如果你不愿意去现场求微分的话，这也可以当做公式来记忆($u^*$刚好是数学期望，$\Sigma^*$刚好是协方差)
 
 注：数学期望：$u=E(X)$，协方差：$\Sigma=cov(X,Y)=E[(X-u)(Y-u)^T]$，对同一个变量来说，协方差为$cov(X,X)=E[(X-u)(X-u)^T$
 
 根据上述的公式和已有的79个点的数据，计算出class 1的两个参数：
+
 $$
 u=
 \begin{bmatrix}
@@ -193,14 +208,17 @@ u=
 874 \ \ 327\\
 327 \ \ 929
 \end{bmatrix}
+
 $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/gaussian.png" width="60%;" /></center>
 
 
+
 同理，我们用极大似然估计法在高斯函数上的公式计算出class 2的两个参数，得到的最终结果如下：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/maximum-2case.png" width="60%;" /></center>
+
 
 
 有了这些以后，我们可以得到$P(C_1),P(x|C_1),P(C_2),P(x|C_2)$这四个值，就可以开始做分类的问题了
@@ -212,6 +230,7 @@ $$
 现在我们已经有了以下数据和具体分布：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/do-classification.png" width="60%;" /></center>
+
 
 
 只要带入某一个input x，就可以通过这个式子计算出它是否是class 1了！
@@ -229,6 +248,7 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/classification-result.png" width="60%;" /></center>
 
 
+
 我们之前用的只是Defense和SP Defense这两个参数，在二维空间上得到的效果不太好，但实际上一开始就提到了宝可梦总共是有6个features的，也许在二维空间上它们是重叠在一起的，但是在六维空间上看它们也许会分得很好，每一个宝可梦都是六维空间中的一个点，于是我们的$u$是一个6-dim的vector，$\Sigma$则是一个6\*6的matrix，发现得到的准确率也才64%，这个分类器表现得很糟糕，是否有办法将它改进的更好？
 
 #### Modifying Model
@@ -240,11 +260,13 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/modify-model.png" width="60%;" /></center>
 
 
+
 此时就把$u_1$、$u_2$和共同的$\Sigma$一起去合成一个极大似然函数，此时可以发现，得到的$u_1$和$u_2$和原来一样，还是各自的均值，而$\Sigma$则是原先两个$\Sigma_1$和$\Sigma_2$的加权
 
 再来看一下结果，你会发现，class 1和class 2在没有共用covariance matrix之前，它们的分界线是一条曲线；如果共用covariance matrix的话，它们之间的分界线就会变成一条直线，这样的model，我们也称之为linear model(尽管Gaussian不是linear的，但是它分两个class的boundary是linear)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/modify-compare.png" width="60%;" /></center>
+
 
 
 如果我们考虑所有的feature，并共用covariance的话，原来的54%的正确率就会变成73%，显然是有分对东西的，但是为什么会做到这样子，我们是很难分析的，因为这是在高维空间中发生的事情，我们很难知道boundary到底是怎么切的，但这就是machine learning它fancy的地方，人没有办法知道怎么做，但是machine可以帮我们做出来
@@ -266,12 +288,15 @@ $$
 * Find the best function
 
     找到的那个最好的function，就是使$L(u,\Sigma)$值最大的那组参数，实际上就是所有样本点的均值和协方差
-    $$
+    
+$$
     u^*=\frac{1}{n}\sum\limits_{i=0}^n x^i \ \ \ \ \Sigma^*=\frac{1}{n}\sum\limits_{i=0}^n (x^i-u^*)(x^i-u^*)^T
-    $$
+    
+$$
     这里上标i表示第i个点，这里x是一个features的vector，用下标来表示这个vector中的某个feature
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/three-steps.png" width="60%;" /></center>
+
 
 
 #### Probability distribution
@@ -285,6 +310,7 @@ $$
 我们可以考虑这样一件事情，假设$x=[x_1 \ x_2 \ x_3 \ ... \ x_k \ ... \ ]$中每一个dimension $x_k$的分布都是相互独立的，它们之间的covariance都是0，那我们就可以把x产生的几率拆解成$x_1,x_2,...,x_k$产生的几率之积
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/distribution.png" width="60%;" /></center>
+
 
 
 这里每一个dimension的分布函数都是一维的Gaussian distribution，如果这样假设的话，等于是说，原来那多维度的Gaussian，它的covariance matrix变成是diagonal(对角的)，在不是对角线的地方，值都是0，这样就可以更加减少需要的参数量，就可以得到一个更简单的model
@@ -306,18 +332,23 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/posterior-probability.png" width="60%;" /></center>
 
 
+
 这个S函数是已知逻辑函数，现在我们来推导一下z**真正的样子**，推导过程如下：
 
-<center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/z1.png" width="60%;" /></center><br>
-<center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/z2.png" width="60%;" /></center><br>
+<center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/z1.png" width="60%;" /></center>
+<br>
+<center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/z2.png" width="60%;" /></center>
+<br>
 
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/z3.png" width="60%;" /></center>
 
 
+
 上面的推导过程可能比较复杂，但是得到的最终结果还是比较好的：(当$\Sigma_1$和$\Sigma_2$共用一个$\Sigma$时，经过化简相消z就变成了一个linear的function，x的系数是一个vector w，后面的一大串数字其实就是一个常数项b)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/z-final.png" width="60%;" /></center>
+
 
 
 ==**$P(C_1|x)=\sigma (w\cdot x+b)$这个式子就解释了，当class 1和class 2共用$\Sigma$的时候，它们之间的boundary会是linear的**==

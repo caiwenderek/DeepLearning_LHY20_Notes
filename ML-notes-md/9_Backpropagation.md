@@ -18,9 +18,12 @@ Backpropagation里面并没有什么高深的数学，你唯一需要记得的�
 我们把training data里任意一个样本点$x^n$代到neural network里面，它会output一个$y^n$，我们把这个output跟样本点本身的label标注的target $\hat{y}^n$作cross entropy，这个**交叉熵定义了output $y^n$和target $\hat{y}^n$之间的距离$l^n(\theta)$**，如果cross entropy比较大的话，说明output和target之间距离很远，这个network的parameter的loss是比较大的，反之则说明这组parameter是比较好的
 
 然后summation over所有training data的cross entropy $l^n(\theta)$，得到total loss $L(\theta)$，这就是我们的loss function，用这个$L(\theta)$对某一个参数w做偏微分，表达式如下：
+
 $$
 \frac{\partial L(\theta)}{\partial w}=\sum\limits_{n=1}^N\frac{\partial l^n(\theta)}{\partial w}
+
 $$
+
 这个表达式告诉我们，只需要考虑如何计算对某一笔data的$\frac{\partial l^n(\theta)}{\partial w}$，再将所有training data的cross entropy对参数w的偏微分累计求和，就可以把total loss对某一个参数w的偏微分给计算出来
 
 我们先考虑某一个neuron，先拿出上图中被红色三角形圈住的neuron，假设只有两个input $x_1,x_2$，通过这个neuron，我们先得到$z=b+w_1 x_1+w_2 x_2$，然后经过activation function从这个neuron中output出来，作为后续neuron的input，再经过了非常非常多的事情以后，会得到最终的output $y_1,y_2$
@@ -47,16 +50,24 @@ $$
 ##### 公式推导
 
 我们的z通过activation function得到a，这个neuron的output是$a=\sigma(z)$，接下来这个a会乘上某一个weight $w_3$，再加上其它一大堆的value得到$z'$，它是下一个neuron activation function的input，然后a又会乘上另一个weight $w_4$，再加上其它一堆value得到$z''$，后面还会发生很多很多其他事情，不过这里我们就只先考虑下一步会发生什么事情：
+
 $$
 \frac{\partial l}{\partial z}=\frac{\partial a}{\partial z} \frac{\partial l}{\partial a}
+
 $$
+
 这里的$\frac{\partial a}{\partial z}$实际上就是activation function的微分(在这里就是sigmoid function的微分)，接下来的问题是$\frac{\partial l}{\partial a}$应该长什么样子呢？a会影响$z'$和$z''$，而$z'$和$z''$会影响$l$，所以通过chain rule可以得到
+
 $$
 \frac{\partial l}{\partial a}=\frac{\partial z'}{\partial a} \frac{\partial l}{\partial z'}+\frac{\partial z''}{\partial a} \frac{\partial l}{\partial z''}
+
 $$
+
 这里的$\frac{\partial z'}{\partial a}=w_3$，$\frac{\partial z''}{\partial a}=w_4$，那$\frac{\partial l}{\partial z'}$和$\frac{\partial l}{\partial z''}$又该怎么算呢？这里先假设我们已经通过某种方法把$\frac{\partial l}{\partial z'}$和$\frac{\partial l}{\partial z''}$这两项给算出来了，然后回过头去就可以把$\frac{\partial l}{\partial z}$给轻易地算出来
+
 $$
 \frac{\partial l}{\partial z}=\frac{\partial a}{\partial z} \frac{\partial l}{\partial a}=\sigma'(z)[w_3 \frac{\partial l}{\partial z'}+w_4 \frac{\partial l}{\partial z''}]
+
 $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/backward-pass.png" width="50%;" /></center>
@@ -80,9 +91,12 @@ ok，现在我们最后需要解决的问题是，怎么计算$\frac{\partial l}
 ###### case 1：Output Layer
 
 假设蓝色的这个neuron已经是hidden layer的最后一层了，也就是说连接在$z'$和$z''$后的这两个红色的neuron已经是output layer，它的output就已经是整个network的output了，这个时候计算就比较简单
+
 $$
 \frac{\partial l}{\partial z'}=\frac{\partial y_1}{\partial z'} \frac{\partial l}{\partial y_1}
+
 $$
+
 其中$\frac{\partial y_1}{\partial z'}$就是output layer的activation function (softmax) 对$z'$的偏微分
 
 而$\frac{\partial l}{\partial y_1}$就是loss对$y_1$的偏微分，它取决于你的loss function是怎么定义的，也就是你的output和target之间是怎么evaluate的，你可以用cross entropy，也可以用mean square error，用不同的定义，$\frac{\partial l}{\partial y_1}$的值就不一样
@@ -96,8 +110,10 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/not-output-layer.png" width="50%;" /></center>
 根据之前的推导证明类比，如果知道$\frac{\partial l}{\partial z_a}$和$\frac{\partial l}{\partial z_b}$，我们就可以计算$\frac{\partial l}{\partial z'}$，如下图所示，借助运算放大器的辅助理解，将$\frac{\partial l}{\partial z_a}$乘上$w_5$和$\frac{\partial l}{\partial z_b}$乘上$w_6$的值加起来再通过op-amp，乘上放大系数$\sigma'(z')$，就可以得到output $\frac{\partial l}{\partial z'}$
+
 $$
 \frac{\partial l}{\partial z'}=\sigma'(z')[w_5 \frac{\partial l}{\partial z_a} + w_6 \frac{\partial l}{\partial z_b}]
+
 $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/bp-not-output-layer.png" width="50%;" /></center>
@@ -128,8 +144,10 @@ $$
 **Backward pass**，建一个与原来方向相反的neural network，它的三角形neuron的output就是$\frac{\partial l}{\partial z}$
 
 把通过forward pass得到的$\frac{\partial z}{\partial w}$和通过backward pass得到的$\frac{\partial l}{\partial z}$乘起来就可以得到$l$对$w$的偏微分$\frac{\partial l}{\partial w}$
+
 $$
 \frac{\partial l}{\partial w} = \frac{\partial z}{\partial w}|_{forward\ pass} \cdot \frac{\partial l}{\partial z}|_{backward \ pass}
+
 $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/bp-summary.png" width="50%;" /></center>

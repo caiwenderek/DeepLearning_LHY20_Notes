@@ -18,6 +18,7 @@ PixelRNN的基本思想是每次只画一个pixel，这个pixel是由过去所�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pixel-rnn.png" width="60%"/></center>
 
+
 这个方法也适用于语音生成，可以用前面一段的语音去预测接下来生成的语音信号
 
 总之，这种方法的精髓在于根据过去预测未来，画出来的图一般都是比较清晰的
@@ -40,6 +41,7 @@ PixelRNN的基本思想是每次只画一个pixel，这个pixel是由过去所�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pixel-rnn-pokemon.png" width="60%"/></center>
 
+
 相关数据连接如下：
 
 - 原始图像(40\*40)数据的[链接](http://speech.ee.ntu.edu.tw/~tlkagk/courses/ML_2016/Pokemon_creation/image.rar)
@@ -49,6 +51,7 @@ PixelRNN的基本思想是每次只画一个pixel，这个pixel是由过去所�
 使用PixelRNN训练好模型之后，给它看没有被放在训练集中的3张图像的一部分，分别遮住原图的50%和75%，得到的原图和预测结果的对比如下：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pixel-rnn-pokemon2.png" width="60%"/></center>
+
 
 #### VAE
 
@@ -61,15 +64,20 @@ VAE全称Variational Autoencoder，可变自动编码器
 但普通的Decoder生成效果并不好，VAE可以得到更好的效果
 
 在VAE中，code不再直接等于Encoder的输出，这里假设目标降维空间为3维，那我们使Encoder分别输出$m_1,m_2,m_3$和$\sigma_1,\sigma_2,\sigma_3$，此外我们从正态分布中随机取出三个点$e_1,e_2,e_3$，将下式作为最终的编码结果：
+
 $$
 c_i = e^{\sigma_i}\cdot e_i+m_i
+
 $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/vae.png" width="60%"/></center>
 
+
 此时，我们的训练目标不仅要最小化input和output之间的差距，还要同时最小化下式：
+
 $$
 \sum\limits_{i=1}^3 (1+\sigma_i-(m_i)^2-e^{\sigma_i})
+
 $$
 与PixelRNN不同的是，VAE画出的图一般都是不太清晰的，但在某种程度上我们可以控制生成的图像
 
@@ -78,6 +86,7 @@ $$
 VAE还可以用来写诗，我们只需要得到某两句话对应的code，然后在降维后的空间中得到这两个code所在点的连线，从中取样，并输入给Decoder，就可以得到类似下图中的效果
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/vae-poetry.png" width="60%"/></center>
+
 
 ##### Why VAE?
 
@@ -90,6 +99,7 @@ VAE和传统的Autoencoder相比，有什么优势呢？
 而对VAE来说，它要保证在降维后的空间中，加了noise的一段范围内的所有点都能够映射到目标图像，如下图所示，当某个点既被要求映射到满月、又被要求映射到弦月，则它最终映射出来的结果就很有可能是两者之间的过渡图像
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/vae-why.png" width="60%"/></center>
+
 
 再回过来头看VAE的结构，其中：
 
@@ -107,6 +117,7 @@ VAE和传统的Autoencoder相比，有什么优势呢？
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/vae-why2.png" width="60%"/></center>
 
+
 额外加的限制函数解释如下：
 
 下图中，蓝线表示$e^{\sigma_i}$，红线表示$1+\sigma_i$，两者相减得到绿线
@@ -116,6 +127,7 @@ VAE和传统的Autoencoder相比，有什么优势呢？
 而$(m_i)^2$项则是对code的L2 regularization，让它比较sparse，不容易过拟合
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/vae-why3.png" width="60%"/></center>
+
 
 关于VAE原理的具体推导比较复杂，这里不再列出
 

@@ -3,19 +3,19 @@
 #### Ups and downs of Deep Learning
 
 * 1958：Perceptron(linear model)，感知机的提出
-    * 和Logistic Regression类似，只是少了sigmoid的部分
+  * 和Logistic Regression类似，只是少了sigmoid的部分
 * 1969：Perceptron has limitation，from MIT
 * 1980s：Multi-layer Perceptron，多层感知机
-    * 和今天的DNN很像
+  * 和今天的DNN很像
 * 1986：Backpropagation，反向传播
-    * Hinton propose的Backpropagation
-    * 存在problem：通常超过3个layer的neural network，就train不出好的结果
+  * Hinton propose的Backpropagation
+  * 存在problem：通常超过3个layer的neural network，就train不出好的结果
 * 1989: 1 hidden layer is “good enough”，why deep？
-    * 有人提出一个理论：只要neural network有一个hidden layer，它就可以model出任何的function，所以根本没有必要叠加很多个hidden layer，所以Multi-layer Perceptron的方法又坏掉了，这段时间Multi-layer Perceptron这个东西是受到抵制的
+  * 有人提出一个理论：只要neural network有一个hidden layer，它就可以model出任何的function，所以根本没有必要叠加很多个hidden layer，所以Multi-layer Perceptron的方法又坏掉了，这段时间Multi-layer Perceptron这个东西是受到抵制的
 * 2006：RBM initialization(breakthrough)：Restricted Boltzmann Machine，受限玻尔兹曼机
-    * Deep learning -> another Multi-layer Perceptron ？在当时看来，它们的不同之处在于在做gradient descent的时候选取初始值的方法如果是用RBM，那就是Deep learning；如果没有用RBM，就是传统的Multi-layer Perceptron
-    * 那实际上呢，RBM用的不是neural network base的方法，而是graphical model，后来大家试验得多了发现RBM并没有什么太大的帮助，因此现在基本上没有人使用RBM做initialization了
-    * RBM最大的贡献是，它让大家重新对Deep learning这个model有了兴趣(石头汤的故事)
+  * Deep learning -> another Multi-layer Perceptron ？在当时看来，它们的不同之处在于在做gradient descent的时候选取初始值的方法如果是用RBM，那就是Deep learning；如果没有用RBM，就是传统的Multi-layer Perceptron
+  * 那实际上呢，RBM用的不是neural network base的方法，而是graphical model，后来大家试验得多了发现RBM并没有什么太大的帮助，因此现在基本上没有人使用RBM做initialization了
+  * RBM最大的贡献是，它让大家重新对Deep learning这个model有了兴趣(石头汤的故事)
 * 2009：GPU加速的发现
 * 2011：start to be popular in speech recognition，语音识别领域
 * 2012：win ILSVRC image competition，Deep learning开始在图像领域流行开来
@@ -54,9 +54,9 @@
 * 对整个neural network来说，它需要一个input，这个input就是一个feature的vector，而对layer 1的每一个neuron来说，它的input就是input layer的每一个dimension
 * 最后那个layer L，由于它后面没有接其它东西了，所以它的output就是整个network的output
 * 这里每一个layer都是有名字的
-    * input的地方，叫做**input layer**，输入层(严格来说input layer其实不是一个layer，它跟其他layer不一样，不是由neuron所组成的)
-    * output的地方，叫做**output layer**，输出层
-    * 其余的地方，叫做**hidden layer**，隐藏层
+  * input的地方，叫做**input layer**，输入层(严格来说input layer其实不是一个layer，它跟其他layer不一样，不是由neuron所组成的)
+  * output的地方，叫做**output layer**，输出层
+  * 其余的地方，叫做**hidden layer**，隐藏层
 * 每一个neuron里面的sigmoid function，在Deep Learning中被称为**activation function**(激励函数)，事实上它不见得一定是sigmoid function，还可以是其他function(sigmoid function是从Logistic Regression迁移过来的，现在已经较少在Deep learning里使用了)
 * 有很多层layers的neural network，被称为**DNN(Deep Neural Network)**
 
@@ -73,8 +73,10 @@
 ##### Matrix Operation
 
 network的运作过程，我们通常会用Matrix Operation来表示，以下图为例，假设第一层hidden layers的两个neuron，它们的weight分别是$w_1=1,w_2=-2,w_1'=-1,w_2'=1$，那就可以把它们排成一个matrix：$\begin{bmatrix}1 \ \ \ -2\\ -1 \ \ \ 1 \end{bmatrix}$，而我们的input又是一个2\*1的vector：$\begin{bmatrix}1\\-1 \end{bmatrix}$，将w和x相乘，再加上bias的vector：$\begin{bmatrix}1\\0 \end{bmatrix}$，就可以得到这一层的vector z，再经过activation function得到这一层的output：(activation function可以是很多类型的function，这里还是用Logistic Regression迁移过来的sigmoid function作为运算)
+
 $$
 \sigma(\begin{bmatrix}1 \ \ \ -2\\ -1 \ \ \ 1 \end{bmatrix} \begin{bmatrix}1\\-1 \end{bmatrix}+\begin{bmatrix}1\\0 \end{bmatrix})=\sigma(\begin{bmatrix}4\\-2 \end{bmatrix})=\begin{bmatrix}0.98\\0.12 \end{bmatrix}
+
 $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/matrix-operation.png" width="50%;" /></center>
@@ -115,12 +117,12 @@ input固定为256维，output固定为10维的feedforward neural network，实�
 
 ##### Step 1：Neural Network
 
-~~~mermaid
+```mermaid
 graph LR
 A(input)
 A--> |256 dimension|B[network structure]
 B--> |10 dimension|C(output)
-~~~
+```
 
 input 256维，output 10维，以及自己design的network structure =》function set(model)
 
@@ -131,8 +133,10 @@ input 256维，output 10维，以及自己design的network structure =》functio
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/loss-for-example.png" width="50%;" /></center>
 
 input这张image的256个pixel，通过这个neural network之后，会得到一个output，称之为y；而从这张image的label中转化而来的target，称之为$\hat{y}$，有了output $y$和target $\hat{y}$之后，要做的事情是计算它们之间的cross entropy(交叉熵)，这个做法跟我们之前做Multi-class classification的时候是一模一样的
+
 $$
 Cross \ Entropy :l(y,\hat{y})=-\sum\limits_{i=1}^{10}\hat{y}_i lny_i
+
 $$
 
 ##### Step 3：Pick the best function
@@ -200,4 +204,3 @@ Q：我们可不可以自己去design一个新的network structure，比如说�
 有这么一个说法：deep learning在NLP上面的performance并没有那么好。语音辨识和影像辨识这两个领域是最早开始用deep learning的，一用下去进步量就非常地惊人，比如错误率一下子就降低了20%这样，但是在NLP上，它的进步量似乎并没有那么惊人，甚至有很多做NLP的人，现在认为说deep learning不见得那么work，这个原因可能是，人在做NLP这件事情的时候，由于人在文字处理上是比较强的，比如叫你设计一个rule去detect一篇document是正面的情绪还是负面的情绪，你完全可以列表，列出一些正面情绪和负面情绪的词汇，然后看这个document里面正面情绪的词汇出现的百分比是多少，你可能就可以得到一个不错的结果。所以NLP这个task，对人来说是比较容易设计rule的，你设计的那些ad-hoc(特别的)的rule，往往可以得到一个还不错的结果，这就是为什么deep learning相较于NLP传统的方法，觉得没有像其他领域一样进步得那么显著(但还是有一些进步的)
 
 长久而言，可能文字处理中会有一些隐藏的资讯是人自己也不知道的，所以让机器自己去学这件事情，还是可以占到一些优势，只是眼下它跟传统方法的差异看起来并没有那么的惊人，但还是有进步的
-

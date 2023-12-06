@@ -16,6 +16,7 @@ PCA和Word Embedding介绍了线性降维的思想，而Neighbor Embedding要介
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/manifold.png" width="60%" /></center>
 
+
 #### Locally Linear Embedding
 
 局部线性嵌入，locally linear embedding，简称**LLE**
@@ -23,12 +24,15 @@ PCA和Word Embedding介绍了线性降维的思想，而Neighbor Embedding要介
 假设在原来的空间中，样本点的分布如下所示，我们关注$x^i$和它的邻居$x^j$，用$w_{ij}$来描述$x_i$和$x_j$的关系
 
 假设每一个样本点$x^i$都是可以用它的neighbor做linear combination组合而成，那$w_{ij}$就是拿$x^j$去组合$x^i$时的权重weight，因此找点与点的关系$w_{ij}$这个问题就转换成，找一组使得所有样本点与周围点线性组合的差距能够最小的参数$w_{ij}$：
+
 $$
 \sum\limits_i||x^i-\sum\limits_j w_{ij}x^j ||_2
+
 $$
 接下来就要做Dimension Reduction，把$x^i$和$x^j$降维到$z^i$和$z^j$，并且保持降维前后两个点之间的关系$w_{ij}$是不变的
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/lle.png" width="60%" /></center>
+
 
 LLE的具体做法如下：
 
@@ -37,9 +41,11 @@ LLE的具体做法如下：
 - 使$x^i$和$x^j$降维到新的低维空间上的$z^i$和$z^j$
 
 - $z^i$和$z^j$需要minimize下面的式子：
-    $$
+    
+$$
     \sum\limits_i||z^i-\sum\limits_j w_{ij}z^j ||_2
-    $$
+    
+$$
 
 - 即在原本的空间里，$x^i$可以由周围点通过参数$w_{ij}$进行线性组合得到，则要求在降维后的空间里，$z^i$也可以用同样的线性组合得到
 
@@ -50,6 +56,7 @@ LLE的具体做法如下：
 下图给出了原始paper中的实验结果，K太小或太大得到的结果都不太好，注意到在原先的空间里，只有距离很近的点之间的关系需要被保持住，如果K选的很大，就会选中一些由于空间扭曲才导致距离接近的点，而这些点的关系我们并不希望在降维后还能被保留
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/lle2.png" width="60%" /></center>
+
 
 #### Laplacian Eigenmaps
 
@@ -65,12 +72,15 @@ LLE的具体做法如下：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/le.png" width="60%" /></center>
 
+
 ##### Review for Smoothness Assumption
 
 简单回顾一下在semi-supervised里的说法：如果两个点$x^1$和$x^2$在高密度区域上是相近的，那它们的label $y^1$和$y^2$很有可能是一样的
+
 $$
 L=\sum\limits_{x^r} C(y^r,\hat y^r) + \lambda S\\
 S=\frac{1}{2}\sum\limits_{i,j} w_{i,j}(y^i-y^j)^2=y^TLy
+
 $$
 其中$C(y^r,\hat y^r)$表示labeled data项，$\lambda S$表示unlabeled data项，它就像是一个regularization term，用于判断我们当前得到的label是否是smooth的
 
@@ -78,11 +88,14 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/le2.png" width="60%" /></center>
 
+
 ##### Application in Unsupervised Task
 
 降维的基本原则：如果$x^i$和$x^j$在high density区域上是相近的，即相似度$w_{i,j}$很大，则降维后的$z^i$和$z^j$也需要很接近，总体来说就是让下面的式子尽可能小
+
 $$
 S=\frac{1}{2}\sum\limits_{i,j} w_{i,j}(y^i-y^j)^2
+
 $$
 注意，与LLE不同的是，这里的$w_{i,j}$表示$x^i$与$x^j$这两点的相似度，上式也可以写成$S=\sum\limits_{i,j} w_{i,j} ||z^i-z^j||_2$
 
@@ -101,6 +114,7 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/le3.png" width="60%" /></center>
 
+
 参考文献：*Belkin, M., Niyogi, P. Laplacian eigenmaps and spectral techniques for embedding and clustering. Advances in neural information processing systems . 2002*
 
 #### t-SNE
@@ -117,6 +131,7 @@ COIL-20数据集包含了同一张图片进行旋转之后的不同形态，对�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/tsne.png" width="60%" /></center>
 
+
 ##### How t-SNE works
 
 做t-SNE同样要降维，在原来$x$的分布空间上，我们需要计算所有$x^i$与$x^j$之间的相似度$S(x^i,x^j)$
@@ -127,14 +142,17 @@ COIL-20数据集包含了同一张图片进行旋转之后的不同形态，对�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/tsne2.png" width="60%" /></center>
 
+
 注意，这里的归一化是有必要的，因为我们无法判断在$x$和$z$所在的空间里，$S(x^i,x^j)$与$S'(z^i,z^j)$的范围是否是一致的，需要将其映射到一个统一的概率区间
 
 我们希望找到的投影空间$z$，可以让$P(x^j|x^i)$和$Q(z^j|z^i)$的分布越接近越好
 
 用于衡量两个分布之间相似度的方法就是**KL散度(KL divergence)**，我们的目标就是让$L$越小越好：
+
 $$
 L=\sum\limits_i KL(P(*|x^i)||Q(*|z^i))\\
 =\sum\limits_i \sum\limits_jP(x^j|x^i)log \frac{P(x^j|x^i)}{Q(z^j|z^i)}
+
 $$
 
 ##### KL Divergence
@@ -142,15 +160,19 @@ $$
 这里简单补充一下KL散度的基本知识
 
 KL 散度，最早是从信息论里演化而来的，所以在介绍 KL 散度之前，我们要先介绍一下信息熵，信息熵的定义如下：
+
 $$
 H=-\sum\limits_{i=1}^N p(x_i)\cdot log\ p(x_i)
+
 $$
 其中$p(x_i)$表示事件$x_i$发生的概率，信息熵其实反映的就是要表示一个概率分布所需要的平均信息量
 
 在信息熵的基础上，我们定义KL散度为：
+
 $$
 D_{KL}(p||q)=\sum\limits_{i=1}^N p(x_i)\cdot (log\ p(x_i)-log\ q(x_i))\\
 =\sum\limits_{i=1}^N p(x_i)\cdot log\frac{p(x_i)}{q(x_i)}
+
 $$
 $D_{KL}(p||q)$表示的就是概率$q$与概率$p$之间的差异，很显然，KL散度越小，说明概率$q$与概率$p$之间越接近，那么预测的概率分布与真实的概率分布也就越接近
 
@@ -181,9 +203,11 @@ t-SNE常用于将固定的高维数据可视化到二维平面上
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/tsne3.png" width="60%" /></center>
 
+
 也就是说t-SNE可以聚集相似的样本点，同时还会放大不同类别之间的距离，从而使得不同类别之间的分界线非常明显，特别适用于可视化，下图则是对MNIST和COIL-20先做PCA降维，再做t-SNE降维可视化的结果：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/tsne4.png" width="60%" /></center>
+
 
 #### Conclusion
 

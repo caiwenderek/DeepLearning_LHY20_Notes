@@ -14,21 +14,27 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/bc.png" width="60%"/></center>
 
+
 实际上目前我们并不知道$u^1$~$u^k$具体的值，因此我们要找这样k个vector，使得$x-\bar x$与$\hat x$越接近越好：
+
 $$
 x-\bar x≈c_1u^1+c_2u^2+...+c_ku^k=\hat x
+
 $$
 而用未知component来描述的这部分内容，叫做Reconstruction error，即$||(x-\bar x)-\hat x||$
 
 接下来我们就要去找k个vector $u^i$去minimize这个error：
+
 $$
 L=\min\limits_{u^1,...,u^k}\sum||(x-\bar x)-(\sum\limits_{i=1}^k c_i u^i) ||_2
+
 $$
 回顾PCA，$z=W\cdot x$，实际上我们通过PCA最终解得的$\{w^1,w^2,...,w^k\}$就是使reconstruction error最小化的$\{u^1,u^2,...,u^k\}$，简单证明如下：
 
 - 我们将所有的$x^i-\bar x≈c_1^i u^1+c_2^i u^2+...$都用下图中的矩阵相乘来表示，我们的目标是使等号两侧矩阵之间的差距越小越好
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/re.png" width="60%"/></center>
+
 
 - 可以使用SVD将每个matrix $X_{m×n}$都拆成matrix $U_{m×k}$、$\Sigma_{k×k}$、$V_{k×n}$的乘积，其中k为component的数目
 - 值得注意的是，使用SVD拆解后的三个矩阵相乘，是跟等号左边的矩阵$X$最接近的，此时$U$就对应着$u^i$那部分的矩阵，$\Sigma\cdot V$就对应着$c_k^i$那部分的矩阵
@@ -38,10 +44,12 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svd.png" width="60%"/></center>
 
+
 - 下面的式子简单演示了将一个样本点$x$划分为k个组件的过程，其中$\left [\begin{matrix}c_1 \ c_2\ ... c_k \end{matrix} \right ]^T$是每个组件的比例；把$x$划分为k个组件即从n维投影到k维空间，$\left [\begin{matrix}c_1 \ c_2\ ... c_k \end{matrix} \right ]^T$也是投影结果
 
     注：$x$和$u_i$均为n维列向量
-    $$
+    
+$$
     \begin{split}
     &x=
     \left [
@@ -82,7 +90,8 @@ $$
     \end{matrix}
     \right ]\\
     \end{split}
-    $$
+    
+$$
     
 
 #### NN for PCA
@@ -92,8 +101,10 @@ $$
 而$\hat x=\sum\limits_{k=1}^K c_k w^k$，我们要使$\hat x$与$x-\bar x$之间的差距越小越好，我们已经根据SVD找到了$w^k$的值，而对每个不同的样本点，都会有一组不同的$c_k$值
 
 在PCA中我们已经证得，$\{w^1,w^2,...,w^k\}$这k个vector是标准正交化的(orthonormal)，因此：
+
 $$
 c_k=(x-\bar x)\cdot w^k
+
 $$
 这个时候我们就可以使用神经网络来表示整个过程，假设$x$是3维向量，要投影到k=2维的component上：
 
@@ -101,13 +112,16 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-nn.png" width="60%"/></center>
 
+
 - 得到$c_1$之后，再让它乘上$w^1$，得到$\hat x$的一部分
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-nn2.png" width="60%"/></center>
 
+
 - 对$c_2$进行同样的操作，乘上$w^2$，贡献$\hat x$的剩余部分，此时我们已经完整计算出$\hat x$三个分量的值
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-nn3.png" width="60%"/></center>
+
 
 - 此时，PCA就被表示成了只含一层hidden layer的神经网络，且这个hidden layer是线性的激活函数，训练目标是让这个NN的input $x-\bar x$与output $\hat x$越接近越好，这件事就叫做**Autoencoder**
 
@@ -129,6 +143,7 @@ PCA有很明显的弱点：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-weak.png" width="60%"/></center>
 
+
 #### PCA for Pokemon
 
 这里举一个实际应用的例子，用PCA来分析宝可梦的数据
@@ -140,6 +155,7 @@ PCA有很明显的弱点：
 实际上，宝可梦的$cov(x)$是6维，最多可以投影到6维空间，我们可以先找出6个特征向量和对应的特征值$\lambda_i$，其中$\lambda_i$表示第i个投影维度的variance有多大(即在第i个维度的投影上点的集中程度有多大)，然后我们就可以计算出每个$\lambda_i$的比例，ratio=$\frac{\lambda_i}{\sum\limits_{i=1}^6 \lambda_i}$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-poke.png" width="60%"/></center>
+
 
 从上图的ratio可以看出$\lambda_5$、$\lambda_6$所占比例不高，即第5和第6个principle component(可以理解为维度)所发挥的作用是比较小的，用这两个dimension做投影所得到的variance很小，投影在这两个方向上的点比较集中，意味着这两个维度表示的是宝可梦的共性，无法对区分宝可梦的特性做出太大的贡献，所以我们只需要利用前4个principle component即可
 
@@ -160,6 +176,7 @@ PCA有很明显的弱点：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-poke2.png" width="60%"/></center>
 
+
 - 对第三个vector PC3来说，sp Def很大而HP和Atk很小，这个组件是用生命力和攻击力来换取特殊防御力
 
 - 对第四个vector PC4来说，HP很大而Atk和Def很小，这个组件是用攻击力和防御力来换取生命力
@@ -173,17 +190,21 @@ PCA有很明显的弱点：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-poke3.png" width="60%"/></center>
 
+
 #### PCA for MNIST
 
 再次回到手写数字识别的问题上来，这个时候我们就可以熟练地把一张数字图像用多个组件(维度)表示出来了：
+
 $$
 digit\ image=a_1 w^1+a_2 w^2+...
+
 $$
 这里的$w^i$就表示降维后的其中一个维度，同时也是一个组件，它是由原先28×28维进行加权求和的结果，因此$w^i$也是一张28×28的图像，下图列出了通过PCA得到的前30个组件的形状：
 
 注：PCA就是求$Cov(x)=\frac{1}{N}\sum (x-\bar x)(x-\bar x)^T$的前30个最大的特征值对应的特征向量
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-mnist.png" width="60%"/></center>
+
 
 #### PCA for Face
 
@@ -193,13 +214,16 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-face.png" width="60%"/></center>
 
+
 #### What happens to PCA
 
 在对MNIST和Face的PCA结果展示的时候，你可能会注意到我们找到的组件好像并不算是组件，比如MNIST找到的几乎是完整的数字雏形，而Face找到的也几乎是完整的人脸雏形，但我们预期的组件不应该是类似于横折撇捺，眼睛鼻子眉毛这些吗？
 
 如果你仔细思考了PCA的特性，就会发现得到这个结果是可能的
+
 $$
 digit\ image=a_1 w^1+a_2 w^2+...
+
 $$
 注意到linear combination的weight $a_i$可以是正的也可以是负的，因此我们可以通过把组件进行相加或相减来获得目标图像，这会导致你找出来的component不是基础的组件，但是通过这些组件的加加减减肯定可以获得基础的组件元素
 
@@ -228,11 +252,13 @@ PCA可以看成对原始矩阵$X$做SVD进行矩阵分解，但并不保证分�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/nmf-mnist.png" width="60%"/></center>
 
+
 ##### NMF for Face
 
 在Face数据集上，通过NMF找到的前30个组价如下图所示，相比于PCA这里更像是脸的一部分
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/nmf-face.png" width="60%"/></center>
+
 
 #### More Related Approaches
 
