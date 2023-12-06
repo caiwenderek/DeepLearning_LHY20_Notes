@@ -152,6 +152,7 @@ plt.show()
 <center><img src="https://img-blog.csdnimg.cn/20200123150335527.png" width="60%;"/></center>
 
 
+
 #### 把learning rate增大10倍尝试
 发现经过100000次的update以后，我们的参数相比之前与最终目标更接近了，但是这里有一个剧烈的震荡现象发生
 
@@ -197,6 +198,7 @@ plt.show()
 
 
 <center><img src="https://img-blog.csdnimg.cn/20200123150716524.png" width="60%;"/></center>
+
 
 
 #### 把learning rate再增大10倍
@@ -246,6 +248,7 @@ plt.show()
 
 
 <center><img src="https://img-blog.csdnimg.cn/2020012315075713.png" width="60%;"/></center>
+
 
 
 这个问题明明很简单，可是只有两个参数b和w，gradient descent搞半天都搞不定，那以后做neural network有数百万个参数的时候，要怎么办呢
@@ -331,6 +334,7 @@ plt.show()
 
 
 <center><img src="https://img-blog.csdnimg.cn/20200123150828598.png" width="60%;"/></center>
+
 
 
 **有了新的learning rate以后，从初始值到终点，我们在100000次iteration之内就可以顺利地完成了**

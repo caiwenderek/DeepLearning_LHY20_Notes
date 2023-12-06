@@ -17,6 +17,7 @@ PCA和Word Embedding介绍了线性降维的思想，而Neighbor Embedding要介
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/manifold.png" width="60%" /></center>
 
 
+
 #### Locally Linear Embedding
 
 局部线性嵌入，locally linear embedding，简称**LLE**
@@ -32,6 +33,7 @@ $$
 接下来就要做Dimension Reduction，把$x^i$和$x^j$降维到$z^i$和$z^j$，并且保持降维前后两个点之间的关系$w_{ij}$是不变的
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/lle.png" width="60%" /></center>
+
 
 
 LLE的具体做法如下：
@@ -58,6 +60,7 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/lle2.png" width="60%" /></center>
 
 
+
 #### Laplacian Eigenmaps
 
 ##### Introduction
@@ -71,6 +74,7 @@ $$
 我们依据某些规则把样本点建立graph，那么smoothness的距离就可以使用graph中连接两个点路径上的edges数来近似
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/le.png" width="60%" /></center>
+
 
 
 ##### Review for Smoothness Assumption
@@ -87,6 +91,7 @@ $$
 其中如果点$x^i$与$x^j$是相连的，则$w_{i,j}$等于相似度，否则为0，$S$的表达式希望在$x^i$与$x^j$很接近的情况下，相似度$w_{i,j}$很大，而label差距$|y^i-y^j|$越小越好，同时也是对label平滑度的一个衡量
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/le2.png" width="60%" /></center>
+
 
 
 ##### Application in Unsupervised Task
@@ -115,6 +120,7 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/le3.png" width="60%" /></center>
 
 
+
 参考文献：*Belkin, M., Niyogi, P. Laplacian eigenmaps and spectral techniques for embedding and clustering. Advances in neural information processing systems . 2002*
 
 #### t-SNE
@@ -132,6 +138,7 @@ COIL-20数据集包含了同一张图片进行旋转之后的不同形态，对�
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/tsne.png" width="60%" /></center>
 
 
+
 ##### How t-SNE works
 
 做t-SNE同样要降维，在原来$x$的分布空间上，我们需要计算所有$x^i$与$x^j$之间的相似度$S(x^i,x^j)$
@@ -141,6 +148,7 @@ COIL-20数据集包含了同一张图片进行旋转之后的不同形态，对�
 将$x$降维到$z$，同样可以计算相似度$S'(z^i,z^j)$，并做归一化：$Q(z^j|z^i)=\frac{S'(z^i,z^j)}{\sum_{k\ne i}S'(z^i,z^k)}$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/tsne2.png" width="60%" /></center>
+
 
 
 注意，这里的归一化是有必要的，因为我们无法判断在$x$和$z$所在的空间里，$S(x^i,x^j)$与$S'(z^i,z^j)$的范围是否是一致的，需要将其映射到一个统一的概率区间
@@ -204,9 +212,11 @@ t-SNE常用于将固定的高维数据可视化到二维平面上
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/tsne3.png" width="60%" /></center>
 
 
+
 也就是说t-SNE可以聚集相似的样本点，同时还会放大不同类别之间的距离，从而使得不同类别之间的分界线非常明显，特别适用于可视化，下图则是对MNIST和COIL-20先做PCA降维，再做t-SNE降维可视化的结果：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/tsne4.png" width="60%" /></center>
+
 
 
 #### Conclusion

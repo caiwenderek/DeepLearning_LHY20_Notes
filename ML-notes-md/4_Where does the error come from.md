@@ -11,6 +11,7 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/estimator.png" style="width:60%;" /></center>
 
+
 #### 抽样分布
 
 ##### $\widehat{y}$和$y^*$ 真值和估测值
@@ -56,6 +57,7 @@ bias：偏差；variance：方差  -> 实际上对应着物理实验中系统误
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/bias-variance.png" /></center>
 
+
 说到这里，可能会产生一个疑惑：我们之前不就只做了一次实验吗？我们就collect了十笔data，然后training出来了一个$f^*$，然后就结束了。那怎么找很多个$f^*$呢？怎么知道它的bias和variance有多大呢？
 
 ##### $f^*$取决于model的复杂程度以及data的数量
@@ -88,6 +90,7 @@ bias是说，我们把所有的$f^*$平均起来得到$E(f^*)=\overline{f^*}$，
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/5000-tests.png" style="width:60%;" /></center>
 
+
 根据上图我们发现，当model比较简单的时候，每次实验得到的$f^*$之间的variance会比较小，这些$f^*$会稳定在一个范围内，但是它们的平均值$\overline{f}$距离真实值$\widehat{f}$会有比较大的偏差；而当model比较复杂的时候，每次实验得到的$f^*$之间的variance会比较大，实际体现出来就是每次重新实验得到的$f^*$都会与之前得到的有较大差距，但是这些差距较大的$f^*$的平均值$\overline{f}$却和真实值$\widehat{f}$比较接近
 
 上图分别是含有一次项、三次项和五次项的model做了5000次实验后的结果，你会发现model越复杂，比如含有5次项的model那一幅图，每一次实验得到的$f^*$几乎是杂乱无章，遍布整幅图的；但是他们的平均值却和真实值$\widehat{f}$吻合的很好。也就是说，复杂的model，单次实验的结果是没有太大参考价值的，但是如果把考虑多次实验的结果的平均值，也许会对最终的结果有帮助
@@ -100,6 +103,7 @@ bias是说，我们把所有的$f^*$平均起来得到$E(f^*)=\overline{f^*}$，
 * 如果是一个比较复杂的model，每次实验找出来的$f^*$都不一样，它有比较大的variance但是却有比较小的bias。就像下图中右下角的打靶模型，每次实验的$f^*$都比较分散，但是他们平均起来的位置与靶心比较接近(比较适合多次实验的情况)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/model-bias.png" style="width:60%;" /></center>
+
 
 ###### 为什么会这样？
 
@@ -127,6 +131,7 @@ $error_{实际}=error_{variance}+error_{bias}——蓝线为红线和绿线之�
 * ==**如果实际error主要来自于variance很大，这个状况就是overfitting过拟合；如果实际error主要来自于bias很大，这个状况就是underfitting欠拟合**==(可以理解为，overfitting就是过分地包围了靶心所在的space，而underfitting则是还未曾包围到靶心所在的space)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/bias-vs-variance.png" style="width:60%;"></center>
+
 
 这就是为什么我们之前要先计算出每一个model对应的error(每一个model都有唯一对应的$f^*$，因此也有唯一对应的error)，再挑选error最小的model的原因，只有这样才能综合考虑bias和variance的影响，找到一个实际error最小的model
 
@@ -168,6 +173,7 @@ bias大代表，你现在这个model里面可能根本没有包含你的target�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/large-bias.png" style="width:60%;" /></center>
 
+
 2、**如果variance比较大**
 
 * 增加data
@@ -186,6 +192,7 @@ bias大代表，你现在这个model里面可能根本没有包含你的target�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/large-variance.png" style="width:60%;"/></center>
 
+
 注：variance比较大的case，加以图例解释如下：(假设这里我们无法获得更多的data)
 
 1、蓝色区域代表最初的情况，此时model比较复杂，function set的space范围比较大，包含了target靶心，但由于data不够，$f^*$比较分散，variance比较大
@@ -197,6 +204,7 @@ bias大代表，你现在这个model里面可能根本没有包含你的target�
 实际上，通过regularization优化model的过程就是上述的1、2、3步骤，不断地调整regularization的weight，使model的bias和variance达到一个最佳平衡的状态(可以通过error来评价状态的好坏，weight需要慢慢调参)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/regularization-illustration.png" style="width:60%;"/></center>
+
 
 #### Model Selection
 
@@ -215,6 +223,7 @@ bias大代表，你现在这个model里面可能根本没有包含你的target�
 以PM2.5预测为例，提供的数据分为training set，public testing set和private testing set三部分，其中public的testing set是供你测试自己的model的，private的testing data是你暂且未知的真正测试数据，现在你的model3在public testing set上的error为0.5，已经成功beat baseline，但是在private的testing set上，你的model3也许根本就没有beat the baseline，反而是model1和model2可能会表现地更好
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/model-selection.png" style="width:60%;"/></center>
+
 
 ##### 怎样做才是可靠的呢？
 
@@ -236,6 +245,7 @@ bias大代表，你现在这个model里面可能根本没有包含你的target�
 这个时候，如果你把这个训练好的model的$f^*$apply到public testing set上面，你可能会得到一个大于0.5的error，虽然这么做，你得到的error表面上看起来是比较大的，但是**这个时候你在public set上的error才能够真正反映你在private set上的error**
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/cross-validation.png" style="width:60%;"/></center>
+
 
 ###### 考虑真实的测试集
 
@@ -274,6 +284,7 @@ bias大代表，你现在这个model里面可能根本没有包含你的target�
 原则上是，如果你少去根据public testing set上的error调整model的话，那你在private testing set上面得到的error往往是比较接近public testing set上的error的
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/n-flod-cross-validation.png" style="width:60%;"/></center>
+
 
 #### 总结conclusion
 

@@ -49,9 +49,11 @@ unlabeled data虽然只有input，但它的**分布**，却可以告诉我们一
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/semi-help1.png" width="45%;"/></center>
 
 
+
 但当我们加入unlabeled data的时候，由于**特征分布**发生了变化，分界线也随之改变
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/semi-help2.png" width="50%;"/></center>
+
 
 
 semi-supervised learning的使用往往伴随着假设，而该假设的合理与否，决定了结果的好坏程度；比如上图中的unlabeled data，它显然是一只狗，而特征分布却与猫被划分在了一起，很可能是由于这两张图片的背景都是绿色导致的，因此假设是否合理显得至关重要
@@ -65,6 +67,7 @@ semi-supervised learning的使用往往伴随着假设，而该假设的合理�
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/super-gm.png" width="60%;"/></center>
 
 
+
 ##### Semi-supervised Generative Model
 
 如果在原先的数据下多了unlabeled data(下图中绿色的点)，它就会影响最终的决定，你会发现原先的$u,\Sigma$显然是不合理的，新的$u,\Sigma$需要使得样本点的分布更接近下图虚线圆所标出的范围，除此之外，右侧的Prior Probability会给人一种比左侧大的感觉(右侧样本点"变多"了)
@@ -72,6 +75,7 @@ semi-supervised learning的使用往往伴随着假设，而该假设的合理�
 此时，unlabeled data对$P(C_1),P(C_2),u^1,u^2,\Sigma$都产生了一定程度的影响，划分两个class的decision boundary也会随之发生变化
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/super-semi.png" width="60%;"/></center>
+
 
 
 讲完了直观上的解释，接下来进行具体推导(假设做二元分类)：
@@ -120,6 +124,7 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/bw.png" width="60%;"/></center>
 
 
+
 ##### Self Training
 
 low-density separation最具代表性也最简单的方法是**self training**
@@ -146,6 +151,7 @@ low-density separation最具代表性也最简单的方法是**self training**
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/self-training.png" width="60%;"/></center>
 
 
+
 ##### Entropy-based Regularization
 
 该方法是low-density separation的进阶版，你可能会觉得hard label这种直接强制性打标签的方式有些太武断了，而entropy-based regularization则做了相应的改进：$y^u=f^*_{\theta^*}(x^u)$，其中$y^u$是一个**概率分布(distribution)**
@@ -153,6 +159,7 @@ low-density separation最具代表性也最简单的方法是**self training**
 由于我们不知道unlabeled data $x^u$的label到底是什么，但如果通过entropy-based regularization得到的分布集中在某个class上的话，那这个model就是好的，而如果分布是比较分散的，那这个model就是不好的，如下图所示：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/entropy.png" width="60%;"/></center>
+
 
 
 接下来的问题是，如何用数值的方法来evaluate distribution的集中(好坏)与否，要用到的方法叫entropy，一个distribution的entropy可以告诉你它的集中程度：
@@ -199,6 +206,7 @@ SVM要做的是，给你两个class的data，去找一个boundary：
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/semi-svm.png" width="60%;"/></center>
 
 
+
 SVM paper：Thorsten Joachims, ”*Transductive* *Inference for Text Classification using Support Vector Machines”,* ICML, 1999
 
 当然这么做会存在一个问题，对于n笔unlabeled data，意味着即使在二元分类里也有$2^n$种可能的情况，数据量大的时候，几乎难以穷举完毕，上面给出的paper提出了一种approximate的方法，基本精神是：一开始你先得到一些label，然后每次改一笔unlabeled data的label，看看可不可以让你的objective function变大，如果变大就去改变该label，具体内容详见paper
@@ -222,6 +230,7 @@ smoothness assumption的基本精神是：近朱者赤，近墨者黑
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/smooth.png" width="60%;"/></center>
 
 
+
 ##### digits detection
 
 以手写数字识别为例，对于最右侧的2和3以及最左侧的2，显然最右侧的2和3在pixel上相似度更高一些；但如果把所有连续变化的2都放进来，就会产生一种“不直接相连的相似”，根据Smoothness Assumption的理论，由于2之间有连续过渡的形态，因此第一个2和最后一个2是比较像的，而最右侧2和3之间由于没有过渡的data，因此它们是比较不像的
@@ -229,6 +238,7 @@ smoothness assumption的基本精神是：近朱者赤，近墨者黑
 人脸的过渡数据也同理
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/smooth2.png" width="60%;"/></center>
+
 
 
 ##### file classification
@@ -242,6 +252,7 @@ Smoothness Assumption在文件分类上是非常有用的
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/overlap.png" width="60%;"/></center>
 
 
+
 ##### cluster and then label
 
 在具体实现上，有一种简单的方法是cluster and then label，也就是先把data分成几个cluster，划分class之后再拿去训练，但这种方法不一定会得到好的结果，因为它的假设是你可以把同一个class的样本点cluster在一起，而这其实是没那么容易的
@@ -251,11 +262,13 @@ Smoothness Assumption在文件分类上是非常有用的
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/cluster.png" width="60%;"/></center>
 
 
+
 ##### Graph-based Approach
 
 之前讲的是比较直觉的做法，接下来引入Graph Structure来表达connected by a high density path这件事
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/graph.png" width="60%;"/></center>
+
 
 
 我们把所有的data points都建成一个graph，有时候建立vertex之间的关系是比较容易的，比如网页之间的链接关系、论文之间的引用关系；但有时候需要你自己去寻找vertex之间的关系
@@ -283,11 +296,13 @@ graph的好坏，对结果起着至关重要的影响，而如何build graph却�
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/build-graph.png" width="60%;"/></center>
 
 
+
 graph-based approach的基本精神是，在graph上已经有一些labeled data，那么跟它们相连的point，属于同一类的概率就会上升，每一笔data都会去影响它的邻居，而graph带来的最重要的好处是，这个影响是会随着edges**传递**出去的，即使有些点并没有真的跟labeled data相连，也可以被传递到相应的属性
 
 比如下图中，如果graph建的足够好，那么两个被分别label为蓝色和红色的点就可以传递完两张完整的图；从中我们也可以看出，如果想要让这种方法生效，收集到的data一定要足够多，否则可能传递到一半，graph就断掉了，information的传递就失效了
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/graph-nei.png" width="60%;"/></center>
+
 
 
 介绍完了如何定性使用graph，接下来介绍一下如何定量使用graph
@@ -301,6 +316,7 @@ $$
 **我们期望smooth的值越小越好**
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/graph-cal.png" width="60%;"/></center>
+
 
 
 当然上面的式子还可以化简，如果把labeled data和unlabeled data的y组成一个(R+U)-dim vector，即
@@ -325,6 +341,7 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/graph-cal2.png" width="60%;"/></center>
 
 
+
 对$S=y^TLy$来说，y是label，是neural network的output，取决于neural network的parameters，因此要在原来仅针对labeled data的loss function中加上这一项，得到：
 
 $$
@@ -343,6 +360,7 @@ $\lambda S$实际上也是一个regularization term
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/graph-cal3.png" width="60%;"/></center>
 
 
+
 #### Better Representation
 
 Better Representation的精神是，去芜存菁，化繁为简
@@ -352,6 +370,7 @@ Better Representation的精神是，去芜存菁，化繁为简
 举一个例子，在神雕侠侣中，杨过要在三招之内剪掉樊一翁的胡子，虽然胡子的变化是比较复杂的，但头的变化是有限的，杨过看透了这一件事情就可以把胡子剪掉。在这个例子中，樊一翁的胡子就是original representation，而他的头就是你要找的better representation
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/better-re.png" width="60%;"/></center>
+
 
 
 算法具体思路和内容到unsupervised learning的时候再介绍

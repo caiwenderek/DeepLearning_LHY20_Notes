@@ -15,6 +15,7 @@
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/bc.png" width="60%"/></center>
 
 
+
 实际上目前我们并不知道$u^1$~$u^k$具体的值，因此我们要找这样k个vector，使得$x-\bar x$与$\hat x$越接近越好：
 
 $$
@@ -36,6 +37,7 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/re.png" width="60%"/></center>
 
 
+
 - 可以使用SVD将每个matrix $X_{m×n}$都拆成matrix $U_{m×k}$、$\Sigma_{k×k}$、$V_{k×n}$的乘积，其中k为component的数目
 - 值得注意的是，使用SVD拆解后的三个矩阵相乘，是跟等号左边的矩阵$X$最接近的，此时$U$就对应着$u^i$那部分的矩阵，$\Sigma\cdot V$就对应着$c_k^i$那部分的矩阵
 - 根据SVD的结论，组成矩阵$U$的k个列向量(标准正交向量, orthonormal vector)就是$XX^T$最大的k个特征值(eignvalue)所对应的特征向量(eigenvector)，而$XX^T$实际上就是$x$的covariance matrix，因此$U$就是PCA的k个解
@@ -43,6 +45,7 @@ $$
 - 简单来说就是，用PCA对$x$进行降维的过程中，我们要找的投影方式$w^i$就相当于恰当的组件$u^i$，投影结果$z^i$就相当于这些组件各自所占的比例$c_i$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/svd.png" width="60%"/></center>
+
 
 
 - 下面的式子简单演示了将一个样本点$x$划分为k个组件的过程，其中$\left [\begin{matrix}c_1 \ c_2\ ... c_k \end{matrix} \right ]^T$是每个组件的比例；把$x$划分为k个组件即从n维投影到k维空间，$\left [\begin{matrix}c_1 \ c_2\ ... c_k \end{matrix} \right ]^T$也是投影结果
@@ -113,14 +116,17 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-nn.png" width="60%"/></center>
 
 
+
 - 得到$c_1$之后，再让它乘上$w^1$，得到$\hat x$的一部分
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-nn2.png" width="60%"/></center>
 
 
+
 - 对$c_2$进行同样的操作，乘上$w^2$，贡献$\hat x$的剩余部分，此时我们已经完整计算出$\hat x$三个分量的值
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-nn3.png" width="60%"/></center>
+
 
 
 - 此时，PCA就被表示成了只含一层hidden layer的神经网络，且这个hidden layer是线性的激活函数，训练目标是让这个NN的input $x-\bar x$与output $\hat x$越接近越好，这件事就叫做**Autoencoder**
@@ -144,6 +150,7 @@ PCA有很明显的弱点：
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-weak.png" width="60%"/></center>
 
 
+
 #### PCA for Pokemon
 
 这里举一个实际应用的例子，用PCA来分析宝可梦的数据
@@ -155,6 +162,7 @@ PCA有很明显的弱点：
 实际上，宝可梦的$cov(x)$是6维，最多可以投影到6维空间，我们可以先找出6个特征向量和对应的特征值$\lambda_i$，其中$\lambda_i$表示第i个投影维度的variance有多大(即在第i个维度的投影上点的集中程度有多大)，然后我们就可以计算出每个$\lambda_i$的比例，ratio=$\frac{\lambda_i}{\sum\limits_{i=1}^6 \lambda_i}$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-poke.png" width="60%"/></center>
+
 
 
 从上图的ratio可以看出$\lambda_5$、$\lambda_6$所占比例不高，即第5和第6个principle component(可以理解为维度)所发挥的作用是比较小的，用这两个dimension做投影所得到的variance很小，投影在这两个方向上的点比较集中，意味着这两个维度表示的是宝可梦的共性，无法对区分宝可梦的特性做出太大的贡献，所以我们只需要利用前4个principle component即可
@@ -177,6 +185,7 @@ PCA有很明显的弱点：
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-poke2.png" width="60%"/></center>
 
 
+
 - 对第三个vector PC3来说，sp Def很大而HP和Atk很小，这个组件是用生命力和攻击力来换取特殊防御力
 
 - 对第四个vector PC4来说，HP很大而Atk和Def很小，这个组件是用攻击力和防御力来换取生命力
@@ -189,6 +198,7 @@ PCA有很明显的弱点：
     - 在PC4维度上特别大的样本点则是吉利蛋和幸福蛋，它们的生命力比较强
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-poke3.png" width="60%"/></center>
+
 
 
 #### PCA for MNIST
@@ -206,6 +216,7 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-mnist.png" width="60%"/></center>
 
 
+
 #### PCA for Face
 
 同理，通过PCA找出人脸的前30个组件(维度)，如下图所示：
@@ -213,6 +224,7 @@ $$
 用这些脸的组件做线性组合就可以得到所有的脸
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pca-face.png" width="60%"/></center>
+
 
 
 #### What happens to PCA
@@ -253,11 +265,13 @@ PCA可以看成对原始矩阵$X$做SVD进行矩阵分解，但并不保证分�
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/nmf-mnist.png" width="60%"/></center>
 
 
+
 ##### NMF for Face
 
 在Face数据集上，通过NMF找到的前30个组价如下图所示，相比于PCA这里更像是脸的一部分
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/nmf-face.png" width="60%"/></center>
+
 
 
 #### More Related Approaches

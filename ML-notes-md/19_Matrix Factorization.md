@@ -13,11 +13,13 @@
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/mf.png" width="60%"/></center>
 
 
+
 #### matrix expression
 
 但是，我们没有办法直接观察某个人背后这些潜在的属性，也不会有人在意一个肥宅心里想的是什么，我们同样也没有办法直接得到动漫人物背后的属性；我们目前有的，只是动漫人物和人之间的关系，即每个人已购买的公仔数目，我们要通过这个关系去推测出动漫人物与人背后的潜在因素(latent factor)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/mf2.png" width="60%"/></center>
+
 
 
 我们可以把每个人的属性用vector $r^A$、$r^B$、$r^C$、$r^D$、$r^E$来表示，而动漫人物的属性则用vector $r^1$、$r^2$、$r^3$、$r^4$来表示，购买的公仔数目可以被看成是matrix $X$，对$X$来说，行数为人数，列数为动漫角色的数目
@@ -33,6 +35,7 @@
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/mf3.png" width="60%"/></center>
 
 
+
 #### prediction
 
 但有时候，部分的information可能是会missing的，这时候就难以用SVD精确描述，但我们可以使用梯度下降的方法求解，loss function如下：
@@ -44,6 +47,7 @@ $$
 其中$r^i$值的是人背后的latent factor，$r^j$指的是动漫角色背后的latent factor，我们要让这两个vector的内积与实际购买该公仔的数量$n_{ij}$越接近越好，这个方法的关键之处在于，计算上式时，可以跳过missing的数据，最终通过gradient descent求得$r^i$和$r^j$的值
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/mf4.png" width="60%"/></center>
+
 
 
 假设latent factor的数目等于2，则人的属性$r^i$和动漫角色的属性$r^j$都是2维的vector，这里实际进行计算后，把属性中较大值标注出来，可以发现：
@@ -58,6 +62,7 @@ $$
 这也是**推荐系统的常用方法**
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/mf5.png" width="60%"/></center>
+
 
 
 #### more about matrix factorization
@@ -87,5 +92,6 @@ $$
 这个场景下找出的latent factor可能会是主题(topic)，比如某个词汇或某个文档有多少比例是偏向于财经主题、政治主题...
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/mf6.png" width="60%"/></center>
+
 
 

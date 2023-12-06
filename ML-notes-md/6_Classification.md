@@ -12,6 +12,7 @@
 
 
 
+
 ##### 输入数值化
 
 对于宝可梦的分类问题来说，我们需要解决的第一个问题就是，怎么把某一只宝可梦当做function的input？
@@ -25,6 +26,7 @@
 以皮卡丘为例，我们可以用以上七种特性的数值所组成的vector来描述它
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/pokemon-features.png" width="60%;"></center>
+
 
 
 
@@ -60,6 +62,7 @@ Regression的output是连续性质的数值，而classification要求的output�
 
 
 
+
 而且值得注意的是，如果是多元分类问题，把class 1的target当做是1，class 2的target当做是2，class 3的target当做是3的做法是错误的，因为当你这样做的时候，就会被Regression认为class 1和class 2的关系是比较接近的，class 2和class 3的关系是比较接近的，而class 1和class 3的关系是比较疏远的；但是当这些class之间并没有什么特殊的关系的时候，这样的标签用Regression是没有办法得到好的结果的(one-hot编码也许是一种解决方案？)
 
 ##### Ideal Alternatives
@@ -73,6 +76,7 @@ Regression的output是连续性质的数值，而classification要求的output�
 我们要找的function f(x)里面会有另外一个function g(x)，当我们的input x输入后，如果g(x)>0，那f(x)的输出就是class 1，如果g(x)<0，那f(x)的输出就是class 2，这个方法保证了function的output都是离散的表示class的数值
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/ideal-alternatives.png" width="60%;" /></center>
+
 
 
 
@@ -124,6 +128,7 @@ C--> |"P(x|C2)"| D(x)
 
 
 
+
 这一整套想法叫做**Generative model**(生成模型)，为什么叫它Generative model呢？因为有这个model的话，就可以拿它来generate生成x(如果你可以计算出每一个x出现的概率，就可以用这个distribution分布来生成x、sample x出来)
 
 ##### Prior
@@ -144,6 +149,7 @@ $P(C_1)$和$P(C_2)$这两个概率，被称为Prior，计算这两个值还是�
 
 
 
+
 其实每一只宝可梦都是用一组特征值组成的向量来表示的，在这个vector里一共有七种不同的feature，为了方便可视化，这里先只考虑Defense和SP Defence这两种feature
 
 假设海龟的vector是[103 45]，虽然这个点在已有的数据里并没有出现过，但是不可以认为它出现的概率为0，我们需要用已有的数据去估测海龟出现的可能性
@@ -151,6 +157,7 @@ $P(C_1)$和$P(C_2)$这两个概率，被称为Prior，计算这两个值还是�
 你可以想象说这已有的79只水系宝可梦的data其实只是冰山一角，假定水系神奇宝贝的Defense和SP Defense是从一个Gaussian的distribution里面sample出来的，下图只是采样了79个点之后得到的分布，但是从高斯分布里采样出海龟这个点的几率并不是0，那从这79个已有的点，怎么找到那个Gaussian distribution函数呢？
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/feature.png" width="60%;" /></center>
+
 
 
 
@@ -168,9 +175,11 @@ $$
 
 
 
+
 同理，如果是同样的$u$，不同的$\Sigma$，概率分布最高点的地方是一样的，但是分布的密集程度是不一样的
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/gaussian-same-u.png" width="60%;" /></center>
+
 
 
 
@@ -179,6 +188,7 @@ $$
 估测$u$和$\Sigma$的方法就是极大似然估计法(Maximum Likelihood)，极大似然估计的思想是，==找出最特殊的那对$u$和$\Sigma$，从它们共同决定的高斯函数中再次采样出79个点，使”得到的分布情况与当前已知79点的分布情况相同“这件事情发生的可能性最大==
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/maximum-likelihood.png" width="60%;"/></center>
+
 
 
 
@@ -215,9 +225,11 @@ $$
 
 
 
+
 同理，我们用极大似然估计法在高斯函数上的公式计算出class 2的两个参数，得到的最终结果如下：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/maximum-2case.png" width="60%;" /></center>
+
 
 
 
@@ -230,6 +242,7 @@ $$
 现在我们已经有了以下数据和具体分布：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/do-classification.png" width="60%;" /></center>
+
 
 
 
@@ -249,6 +262,7 @@ $$
 
 
 
+
 我们之前用的只是Defense和SP Defense这两个参数，在二维空间上得到的效果不太好，但实际上一开始就提到了宝可梦总共是有6个features的，也许在二维空间上它们是重叠在一起的，但是在六维空间上看它们也许会分得很好，每一个宝可梦都是六维空间中的一个点，于是我们的$u$是一个6-dim的vector，$\Sigma$则是一个6\*6的matrix，发现得到的准确率也才64%，这个分类器表现得很糟糕，是否有办法将它改进的更好？
 
 #### Modifying Model
@@ -261,11 +275,13 @@ $$
 
 
 
+
 此时就把$u_1$、$u_2$和共同的$\Sigma$一起去合成一个极大似然函数，此时可以发现，得到的$u_1$和$u_2$和原来一样，还是各自的均值，而$\Sigma$则是原先两个$\Sigma_1$和$\Sigma_2$的加权
 
 再来看一下结果，你会发现，class 1和class 2在没有共用covariance matrix之前，它们的分界线是一条曲线；如果共用covariance matrix的话，它们之间的分界线就会变成一条直线，这样的model，我们也称之为linear model(尽管Gaussian不是linear的，但是它分两个class的boundary是linear)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/modify-compare.png" width="60%;" /></center>
+
 
 
 
@@ -299,6 +315,7 @@ $$
 
 
 
+
 #### Probability distribution
 
 ##### Why Gaussian distribution
@@ -310,6 +327,7 @@ $$
 我们可以考虑这样一件事情，假设$x=[x_1 \ x_2 \ x_3 \ ... \ x_k \ ... \ ]$中每一个dimension $x_k$的分布都是相互独立的，它们之间的covariance都是0，那我们就可以把x产生的几率拆解成$x_1,x_2,...,x_k$产生的几率之积
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/distribution.png" width="60%;" /></center>
+
 
 
 
@@ -333,11 +351,14 @@ $$
 
 
 
+
 这个S函数是已知逻辑函数，现在我们来推导一下z**真正的样子**，推导过程如下：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/z1.png" width="60%;" /></center>
+
 <br>
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/z2.png" width="60%;" /></center>
+
 <br>
 
 
@@ -345,9 +366,11 @@ $$
 
 
 
+
 上面的推导过程可能比较复杂，但是得到的最终结果还是比较好的：(当$\Sigma_1$和$\Sigma_2$共用一个$\Sigma$时，经过化简相消z就变成了一个linear的function，x的系数是一个vector w，后面的一大串数字其实就是一个常数项b)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/z-final.png" width="60%;" /></center>
+
 
 
 

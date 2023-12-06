@@ -26,6 +26,7 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/three-step-dl.png" width="50%;" /></center>
 
+
 #### Neural Network
 
 ##### concept
@@ -33,6 +34,7 @@
 把多个Logistic Regression前后connect在一起，然后把一个Logistic Regression称之为neuron，整个称之为neural network
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/neural-network.png" width="50%;" /></center>
+
 
 我们可以用不同的方法连接这些neuron，就可以得到不同的structure，neural network里的每一个Logistic Regression都有自己的weight和bias，这些weight和bias集合起来，就是这个network的parameter，我们用$\theta$来描述
 
@@ -43,6 +45,7 @@
 如果一个neural network的参数weight和bias已知的话，它就是一个function，它的input是一个vector，output是另一个vector，这个vector里面放的是样本点的feature，vector的dimension就是feature的个数
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/fully-connect-feedback-network.png" width="65%;" /></center>
+
 
 如果今天我们还不知道参数，只是定出了这个network的structure，只是决定好这些neuron该怎么连接在一起，这样的一个network structure其实是define了一个function set(model)，我们给这个network设不同的参数，它就变成了不同的function，把这些可能的function集合起来，我们就得到了一个function set
 
@@ -62,11 +65,13 @@
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/layers.png" width="50%;" /></center>
 
+
 **因为layer和layer之间，所有的neuron都是两两连接，所以它叫Fully connected的network；因为现在传递的方向是从layer 1->2->3，由后往前传，所以它叫做Feedforward network**
 
 那所谓的deep，是什么意思呢？有很多层hidden layer，就叫做deep，具体的层数并没有规定，现在只要是neural network base的方法，都被称为Deep Learning，下图是一些model使用的hidden layers层数举例
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/many-hidden-layers.png" width="50%;" /></center>
+
 
 你会发现使用了152个hidden layers的Residual Net，它识别图像的准确率比人类还要高当然它不是使用一般的Fully Connected Feedforward Network，它需要设计特殊的special structure才能训练这么深的network
 
@@ -81,9 +86,11 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/matrix-operation.png" width="50%;" /></center>
 
+
 这里我们把所有的变量都以matrix的形式表示出来，注意$W^i$的matrix，每一行对应的是一个neuron的weight，行数就是neuron的个数，而input x，bias b和output y都是一个列向量，行数就是feature的个数(也是neuron的个数，neuron的本质就是把feature transform到另一个space)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/neural-network-compute.png" width="50%;" /></center>
+
 
 把这件事情写成矩阵运算的好处是，可以用GPU加速，GPU对matrix的运算是比CPU要来的快的，所以我们写neural network的时候，习惯把它写成matrix operation，然后call GPU来加速它
 
@@ -95,6 +102,7 @@ output layer做的事情，其实就是把它当做一个**Multi-class classifie
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/output-layer.png" width="50%;" /></center>
 
+
 #### Example Application
 
 ##### Handwriting Digit Recognition
@@ -104,6 +112,7 @@ output layer做的事情，其实就是把它当做一个**Multi-class classifie
 而neural network的output，如果在output layer使用了softmax，那它的output就是一个突出极大值的Probability distribution，假设我们的output是10维的话(10个数字，0~9)，这个output的每一维都对应到它可能是某一个数字的几率，实际上这个neural network的作用就是计算这张image成为10个数字的几率各自有多少，几率最大(softmax突出极大值的意义所在)的那个数字，就是机器的预测值
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/example-application.png" width="50%;" /></center>
+
 
 在这个手写字体识别的demo里，我们唯一需要的就是一个function，这个function的input是一个256的vector，output是一个10维的vector，这个function就是neural network(这里我们用简单的Feedforward network)
 
@@ -132,6 +141,7 @@ input 256维，output 10维，以及自己design的network structure =》functio
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/loss-for-example.png" width="50%;" /></center>
 
+
 input这张image的256个pixel，通过这个neural network之后，会得到一个output，称之为y；而从这张image的label中转化而来的target，称之为$\hat{y}$，有了output $y$和target $\hat{y}$之后，要做的事情是计算它们之间的cross entropy(交叉熵)，这个做法跟我们之前做Multi-class classification的时候是一模一样的
 
 $$
@@ -145,6 +155,7 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/total-loss.png" width="50%;" /></center>
 
+
 那怎么去找这个使total loss minimize的$\theta^*$呢？使用的方法就是我们的老朋友——**Gradient Descent**
 
 实际上在deep learning里面用gradient descent，跟在linear regression里面使用完全没有什么差别，只是function和parameter变得更复杂了而已，其他事情都是一模一样的
@@ -152,6 +163,7 @@ $$
 现在你的$\theta$里面是一大堆的weight、bias参数，先random找一个初始值，接下来去计算每一个参数对total loss的偏微分，把这些偏微分全部集合起来，就叫做gradient，有了这些偏微分以后，你就可以更新所有的参数，都减掉learning rate乘上偏微分的值，这个process反复进行下去，最终找到一组好的参数，就做完deep learning的training了
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/dl-gradient.png" width="60%;" /></center>
+
 
 ##### toolkit
 
@@ -184,6 +196,7 @@ Q：我们可不可以自己去design一个新的network structure，比如说�
 甚至有一个理论是这样说的，任何连续的function，它input是一个N维的vector，output是一个M维的vector，它都可以用一个hidden layer的neural network来表示，只要你这个hidden layer的neuron够多，它可以表示成任何的function，既然一个hidden layer的neural network可以表示成任何的function，而我们在做machine learning的时候，需要的东西就只是一个function而已，那做deep有什么特殊的意义呢？
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/universality-theorem.png" width="50%;" /></center>
+
 
 所以有人说，deep learning就只是一个噱头而已，因为做deep感觉比较潮，如果你只是增加neuron把它变宽，变成fat neural network，那就感觉太“虚弱”了，所以我们要做deep learning，给它增加layers而不是增加neuron：DNN(deep) is better than FNN(fat)
 

@@ -23,6 +23,7 @@ $w_i$：weight，$b$：bias，$\sigma(z)$：sigmoid function，$x_i$：input
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/activation-function.png" width="60%;" /></center>
 
+
 ##### Step 2：Goodness of a function
 
 现在我们有N笔Training data，每一笔data都要标注它是属于哪一个class
@@ -32,6 +33,7 @@ $w_i$：weight，$b$：bias，$\sigma(z)$：sigmoid function，$x_i$：input
 似然函数只需要将每一个点产生的概率相乘即可，注意，这里假定是二元分类，class 2的概率为1减去class 1的概率
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/likelihood.png" width="60%;" /></center>
+
 
 由于$L(w,b)$是乘积项的形式，为了方便计算，我们将上式做个变换：
 
@@ -71,6 +73,7 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/cross-entropy.png" width="60%;" /></center>
 
+
 假设有如上图所示的两个distribution p和q，它们的交叉熵就是$H(p,q)=-\sum\limits_{x} p(x) \ln (q(x))$，这也就是之前的推导中在$-\ln L(w,b)$前加一个负号的原因
 
 cross entropy交叉熵的含义是表达这两个distribution有多接近，如果p和q这两个distribution一模一样的话，那它们算出来的cross entropy就是0(详细解释在“信息论”中)，而这里$f(x^n)$表示function的output，$\hat{y}^n$表示预期 的target，因此**交叉熵实际上表达的是希望这个function的output和它的target越接近越好**
@@ -90,13 +93,16 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/sigmoid.png" width="40%;" /></center>
 
+
 先计算$-\ln L(w,b)=\sum\limits_n -[\hat{y}^n \ln f_{w,b}(x^n)+(1-\hat{y}^n) \ln(1-f_{w,b}(x^n))]$对$w_i$的偏微分，这里$\hat{y}^n$和$1-\hat{y}^n$是常数先不用管它，只需要分别求出$\ln f_{w,b}(x^n)$和$\ln (1-f_{w,b}(x^n))$对$w_i$的偏微分即可，整体推导过程如下：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/logistic-contribute.png" width="60%;" /></center>
 
+
 将得到的式子进行进一步化简，可得：
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/logistic-simple.png" width="60%;" /></center>
+
 
 我们发现最终的结果竟然异常的简洁，gradient descent每次update只需要做：
 
@@ -138,11 +144,13 @@ Logistic Regression是把每一个feature $x_i$加权求和，加上bias，再�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/logistic-linear-regression.png" width="60%;" /></center>
 
+
 #### Logistic Regression + Square error？
 
 之前提到了，为什么Logistic Regression的loss function不能用square error来描述呢？我们现在来试一下这件事情，重新做一下machine learning的三个step
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/logistic-square.png" width="60%;" /></center>
+
 
 现在会遇到一个问题：如果第n个点的目标target是class 1，则$\hat{y}^n=1$，此时如果function的output $f_{w,b}(x^n)=1$的话，说明现在离target很接近了，$f_{w,b}(x)-\hat{y}$这一项是0，于是得到的微分$\frac{\partial L}{\partial w_i}$会变成0，这件事情是很合理的；但是当function的output $f_{w,b}(x^n)=0$的时候，说明离target还很遥远，但是由于在step3中求出来的update表达式中有一个$f_{w,b}(x^n)$，因此这个时候也会导致得到的微分$\frac{\partial L}{\partial w_i}$变成0
 
@@ -151,6 +159,7 @@ Logistic Regression是把每一个feature $x_i$加权求和，加上bias，再�
 如果我们把参数的变化对total loss作图的话，loss function选择cross entropy或square error，参数的变化跟loss的变化情况可视化出来如下所示：(黑色的是cross entropy，红色的是square error)
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/cross-entropy-vs-square-error.png" width="60%;" /></center>
+
 
 假设中心点就是距离目标很近的地方，如果是cross entropy的话，距离目标越远，微分值就越大，参数update的时候变化量就越大，迈出去的步伐也就越大
 
@@ -166,6 +175,7 @@ Logistic Regression的方法，我们把它称之为discriminative的方法；�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/discriminative-generative.png" width="60%;" /></center>
 
+
 实际上它们用的model(function set)是一模一样的，都是$P(C_1|x)=\sigma(w\cdot x+b)$，如果是用Logistic Regression的话，可以用gradient descent的方法直接去把b和w找出来；如果是用Generative model的话，我们要先去算$u_1,u_2,\Sigma^{-1}$，然后算出b和w
 
 你会发现用这两种方法得到的b和w是不同的，尽管我们的function set是同一个，但是由于做了不同的假设，最终从同样的Training data里找出来的参数会是不一样的
@@ -178,6 +188,7 @@ Logistic Regression的方法，我们把它称之为discriminative的方法；�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/generative-discriminative-visualize.png" width="60%;" /></center>
 
+
 实际上Discriminative的方法常常会比Generative的方法表现得更好，这里举一个简单的例子来解释一下
 
 ##### toy example
@@ -187,6 +198,7 @@ Logistic Regression的方法，我们把它称之为discriminative的方法；�
 如果我们的testing data的两个feature都是1，凭直觉来说会认为它肯定是class 1，但是如果用naive bayes的方法(朴素贝叶斯假设所有的feature相互独立，方便计算)，得到的结果又是怎样的呢？
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/toy-example.png" width="60%;" /></center>
+
 
 通过Naive bayes得到的结果竟然是这个测试点属于class 2的可能性更大，这跟我们的直觉比起来是相反的，实际上我们直觉认为两个feature都是1的测试点属于class 1的可能性更大是因为我们潜意识里认为这两个feature之间是存在某种联系的，但是对Naive bayes来说，它是不考虑不同dimension之间的correlation，Naive bayes认为在dimension相互独立的前提下，class 2没有sample出都是1的data，是因为sample的数量不够多，如果sample够多，它认为class 2观察到都是1的data的可能性会比class 1要大
 
@@ -241,6 +253,7 @@ Generative model的好处是，它对data的依赖并没有像discriminative mod
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/multi-class.png" width="60%;" /></center>
 
+
 原来的output z可以是任何值，但是做完softmax之后，你的output $y_i$的值一定是介于0~1之间，并且它们的和一定是1，$\sum\limits_i y_i=1$，以上图为例，$y_i$表示input x属于第i个class的概率，比如属于C1的概率是$y_1=0.88$，属于C2的概率是$y_2=0.12$，属于C3的概率是$y_3=0$
 
 而softmax的output，就是拿来当z的posterior probability
@@ -275,6 +288,7 @@ $$
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/softmax.png" width="60%;" /></center>
 
+
 这个时候就可以计算一下output $y$和 target $\hat{y}$之间的交叉熵，即$-\sum\limits_{i=1}^3 \hat{y}_i \ln y_i$，同二元分类一样，多元分类问题也是通过极大似然估计法得到最终的交叉熵表达式的，这里不再赘述
 
 #####  Limitation of Logistic Regression
@@ -282,6 +296,7 @@ $$
 Logistic Regression其实有很强的限制，给出下图的例子中的Training data，想要用Logistic Regression对它进行分类，其实是做不到的
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/logistic-limitation.png" width="60%;" /></center>
+
 
 因为Logistic Regression在两个class之间的boundary就是一条直线，但是在这个平面上无论怎么画直线都不可能把图中的两个class分隔开来
 
@@ -293,11 +308,13 @@ Logistic Regression其实有很强的限制，给出下图的例子中的Trainin
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/feature-transformation.png" width="60%;" /></center>
 
+
 但麻烦的是，我们并不知道怎么做feature Transformation，如果在这上面花费太多的时间就得不偿失了，于是我们会希望这个Transformation是机器自己产生的，怎么让机器自己产生呢？==**我们可以让很多Logistic Regression cascade(连接)起来**==
 
 我们让一个input x的两个feature $x_1,x_2$经过两个Logistic Regression的transform，得到新的feature $x_1',x_2'$，在这个新的feature space上，class 1和class 2是可以用一条直线分开的，那么最后只要再接另外一个Logistic Regression的model(对它来说，$x_1',x_2'$才是每一个样本点的"feature"，而不是原先的$x_1,x_2$)，它根据新的feature，就可以把class 1和class 2分开
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/cascade-logistic-regression.png" width="60%;" /></center>
+
 
 因此着整个流程是，先用n个Logistic Regression做feature Transformation(n为每个样本点的feature数量)，生成n个新的feature，然后再用一个Logistic Regression作classifier
 
@@ -307,6 +324,7 @@ Logistic Regression的boundary一定是一条直线，它可以有任何的画�
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/logistic-example.png" width="60%;" /></center>
 
+
 注意，这里的Logistic Regression只是一条直线，它指的是“属于这个类”或“不属于这个类”这两种情况，因此最后的这个Logistic Regression是跟要检测的目标类相关的，当只是二元分类的时候，最后只需要一个Logistic Regression即可，当面对多元分类问题，需要用到多个Logistic Regression来画出多条直线划分所有的类，每一个Logistic Regression对应它要检测的那个类
 
 ##### Powerful Cascading Logistic Regression
@@ -314,3 +332,4 @@ Logistic Regression的boundary一定是一条直线，它可以有任何的画�
 通过上面的例子，我们发现，多个Logistic Regression连接起来会产生powerful的效果，==**我们把每一个Logistic Regression叫做一个neuron(神经元)，把这些Logistic Regression串起来所形成的network，就叫做Neural Network，就是类神经网路，这个东西就是Deep Learning！**==
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/powerful-network.png" width="60%;" /></center>
+

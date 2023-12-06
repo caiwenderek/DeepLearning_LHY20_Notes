@@ -26,6 +26,7 @@ $z_1=w^1\cdot x$，其中$w^1$表示$w$的第一个row vector，假设$w^1$的�
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/PCA1.png" width="60%"/></center>
 
 
+
 #### PCA for n-D
 
 当然我们不可能只投影到一维空间，我们还可以投影到更高维的空间
@@ -41,6 +42,7 @@ $z_1,z_2,...$串起来就得到$z$，而$w^1,w^2,...$分别是$W$的第1,2,...�
 
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/PCA2.png" width="60%"/></center>
+
 
 
 #### Lagrange multiplier
@@ -128,6 +130,7 @@ $$
 - 结论：**$w^1$是$S=Cov(x)$这个matrix中的特征向量，对应最大的特征值$\lambda_1$**
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/cov.png" width="60%"/></center>
+
 
 
 ##### calculate $w^2$
@@ -225,6 +228,7 @@ $$
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/cov2.png" width="60%"/></center>
 
 
+
 #### PCA-decorrelation
 
 $z=W\cdot x$
@@ -236,6 +240,7 @@ PCA可以让不同dimension之间的covariance变为0，即不同new feature之�
 如果你把原来的input data通过PCA之后再给其他model使用，那这些model就可以使用简单的形式，而无需考虑不同dimension之间类似$x_1\cdot x_2,x_3\cdot x_5^3,...$这些交叉项，此时model得到简化，参数量大大降低，相同的data量可以得到更好的训练结果，从而可以避免overfitting的发生
 
 <center><img src="https://gitee.com/Sakura-gh/ML-notes/raw/master/img/cov3.png" width="60%"/></center>
+
 
 
 本文主要介绍的是PCA的数学推导，如果你理解起来有点困难，那下一篇文章将会从另一个角度解释PCA算法的原理~
